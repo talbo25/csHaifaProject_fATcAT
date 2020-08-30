@@ -1,0 +1,12 @@
+{
+  "name": "fAtcAt",
+  "displayName": "fAtcAt",
+  "expo": {
+    "name": "fAtcAt",
+    "slug": "fAtcAt",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
