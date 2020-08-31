@@ -41,13 +41,13 @@ const App = () => {
 
   const { cats, bowls } = deviceShit;
   change_page = (newPage) => {
-    console.log("change_page ", newPage);
+    // console.log("change_page ", newPage);
     setState({ ...state, ["currentPage"]: newPage });
   };
 
   on_button_submit = (objectType, objectData) => {
     // edit or create new
-    console.log("-D- on_button_submit");
+    // console.log("-D- on_button_submit");
 
     const uniqueId = DeviceInfo.getUniqueId();
     const requestOptions = {
@@ -69,40 +69,7 @@ const App = () => {
     return true;
   };
 
-  // verify if user's bowl exist on server
-  find_bowl_button = (objectType, objectData) => {
-    console.log("-D- find_bowl_button");
-    console.log("-D- objectData = ", objectData);
-    let { id, key } = objectData;
-
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: id,
-        key: key,
-      }),
-    };
-
-    return fetch(`http://10.0.3.2:3000/verify_bowl`, requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data["id"]) {
-          console.log("BEZA");
-          change_edit_target(data, "bowl");
-          data = true;
-        }
-        console.log("ZAIN");
-        console.log("status = ", state);
-        return data;
-      })
-      .catch((err) => console.log(err));
-  };
-
   change_edit_target = (target, targetType) => {
-    console.log("-D- change_edit_target - targetType = ", targetType);
-    console.log("-D- change_edit_target - target = ", target);
-
     setState({ ...state, ["editTarget"]: target });
     state["editTarget"] = target;
     switch (targetType) {
@@ -117,7 +84,6 @@ const App = () => {
     }
   };
 
-  console.log(state);
   return (
     <View style={styles.mainContainer}>
       <TopBar style={styles.statusBar} />
@@ -142,7 +108,7 @@ const App = () => {
             editTarget={state["editTarget"]}
           />
         ) : (
-          <NewBowl find_bowl_button={find_bowl_button} />
+          <NewBowl />
         )}
       </View>
     </View>

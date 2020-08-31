@@ -7,6 +7,8 @@ const cors = require('cors');
 const device_data = require('./controllers/device_data.js');
 const verify_bowl = require('./controllers/verify_bowl.js');
 const add_new_object = require('./controllers/add_new_object.js');
+const check_weight = require('./controllers/check_weight.js');
+const gods_intervention = require('./controllers/gods_intervention.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -35,6 +37,8 @@ app.post('/device_data', device_data.handleDeviceData(database,getAllData));
 app.post('/verify_bowl', verify_bowl.handleVerifyBowl(database));
 app.post('/add_new_object/bowl', add_new_object.handleNewBowl(database,getAllData));
 app.post('/add_new_object/cat', add_new_object.handleNewCat(database,getAllData));
+app.post('/check_weight', check_weight.handleCheckWeight(database));
+app.post('/gods_intervention', gods_intervention.handleGodsIntervention(database));
 
 app.listen(3000, ()=> {
 	console.log('app is running on 3000');

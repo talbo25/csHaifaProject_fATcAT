@@ -43,7 +43,7 @@ const handleNewBowl = (database,getAllData) => (req,res) => {
 
 	let newData = getAllData(currentDeviceID);
 	if (newData === {}) {
-		return res.status(400).json("-E- Couldn't find user");
+		return res.status(400).json("-E- Couldn't edit/add bowl");
 	} else {
 		return res.json(newData);
 	}
@@ -100,7 +100,7 @@ const handleNewCat = (database,getAllData) => (req,res) => {
 	}
 	let found = getAllData(currentDeviceID);
 	if (found === {}) {
-		return res.status(400).json("-E- Couldn't find user");
+		return res.status(400).json("-E- Couldn't edit/add cat");
 	} else {
 		return res.json(found);
 	}
