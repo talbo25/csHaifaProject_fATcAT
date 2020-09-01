@@ -33,6 +33,8 @@ const getInitialStateAndValues = (fields, editTarget) => {
       if (fields[key]["type"] === "multipleSelect") {
         console.log("-D- what is this key - ", key);
         state[key] = [];
+      } else if (fields[key]["type"] === "picker") {
+        state[key] = fields[key]["options"][0]["value"];
       } else {
         state[key] = fields[key]["options"][0];
       }

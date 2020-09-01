@@ -18,7 +18,6 @@ const TopBar = () => {
       </Icon.Button>
 
       <Text>fATcAT</Text>
-      <Text>Right</Text>
     </View>
   );
 };

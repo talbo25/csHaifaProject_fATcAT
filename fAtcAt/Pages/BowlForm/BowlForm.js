@@ -29,13 +29,13 @@ const BowlForm = ({ cats, on_button_submit, editTarget }) => {
             validators: [validateContent],
             type: "text",
           },
-          cats: {
-            label: "Cats",
-            type: "multipleSelect",
-            options: cats.map((cat) => {
-              return { id: cat.id, name: cat.name };
-            }),
-          },
+          // cats: {
+          //   label: "Cats",
+          //   type: "multipleSelect",
+          //   options: cats.map((cat) => {
+          //     return { id: cat.id, name: cat.name };
+          //   }),
+          // },
           activeHours: {
             label: "Active Hours",
             type: "timeRange",

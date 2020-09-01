@@ -25,4 +25,13 @@ export const hoursOptions = [
   "23:00",
 ];
 
-export const sexOptions = ["male", "female"];
+export const sexOptions = [
+  {
+    label: "male",
+    value: "male",
+  },
+  {
+    label: "female",
+    value: "female",
+  },
+];

@@ -17,7 +17,6 @@ const HomePage = ({ cats, bowls, change_page, change_edit_target }) => {
         change_page={change_page}
         change_edit_target={change_edit_target}
       />
-      <Text>ME ANI KIVSA</Text>
     </View>
   );
 };

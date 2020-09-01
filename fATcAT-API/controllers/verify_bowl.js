@@ -7,24 +7,30 @@ const handleVerifyBowl = (database) => (req,res) => {
 	// console.log(database);
 	let found = false;
 	let tempBowl = { "id" : id};
-	database.factoryBowls.forEach((bowl) => { 
+	database.bowls.forEach((bowl) => { 
 		if ((id === bowl["id"]) && (key === bowl["key"])) {
 			console.log("FOUND!");
 			found = true;
-
-			try {
-				database.bowls.forEach((bowl) => {
-					if (bowl["id"] === id) {
-						Object.keys(bowl).forEach((key) => {
-							tempBowl[key] = bowl[key];
-						})
-						throw BreakException;
-					}
-				
-				})	
-			} catch (e) {
-				if (e !== BreakException) throw e;
+			if (Object.keys(bowl).includes("cats")) {
+				tempBowl["cats"] = bowl["cats"];
 			}
+			if (Object.keys(bowl).includes("activeHours")) {
+				tempBowl["activeHours"] = bowl["activeHours"];
+			}
+
+			// try {
+			// 	database.bowls.forEach((bowl) => {
+			// 		if (bowl["id"] === id) {
+			// 			Object.keys(bowl).forEach((key) => {
+			// 				tempBowl[key] = bowl[key];
+			// 			})
+			// 			throw BreakException;
+			// 		}
+				
+			// 	})	
+			// } catch (e) {
+			// 	if (e !== BreakException) throw e;
+			// }
 			res.json(tempBowl);
 		}
 	});

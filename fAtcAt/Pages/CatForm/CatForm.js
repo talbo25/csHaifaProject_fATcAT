@@ -39,10 +39,12 @@ const CatForm = ({ bowls, on_button_submit, editTarget }) => {
             type: "slider",
             options: [0.5, 11.0],
           },
-          bowl: {
+          bowlID: {
             label: "Bowl",
             type: "picker",
-            options: bowls.map((bowl) => bowl.name),
+            options: bowls.map((bowl) => {
+              return { value: bowl.id, label: bowl.name };
+            }),
           },
           feedingHours: {
             label: "Feeding Hours",

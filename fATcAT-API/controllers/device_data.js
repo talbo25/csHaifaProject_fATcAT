@@ -1,9 +1,12 @@
-const handleDeviceData = (database,getAllData) => (req,res) => {
+const handleDeviceData = (database,getAllDeviceData) => (req,res) => {
 	const { id } = req.body;
-	let found = getAllData(id);
-
-	if (found === {}) {
-		res.status(400).json("-E- Couldn't find user");
+	let found = getAllDeviceData(id);
+	console.log("handleDeviceData found = ",found);
+	if (Object.keys(found).length === 0) {
+		// new device 
+		console.log("new device id = ",id);
+		database.devices.push({"id":id})
+		res.json({"cats":[], "bowls":[]});
 	} else {
 		return res.json(found);
 	}

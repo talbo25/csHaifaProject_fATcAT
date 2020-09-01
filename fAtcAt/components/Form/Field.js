@@ -12,6 +12,9 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import MultiSelect from "react-native-multiple-select";
 
 const Field = ({ keyna, field, value, onChangeValue }) => {
+  // console.log("########################Field");
+  // console.log("field ", field);
+  // console.log("value ", value);
   if (field["type"] === "text") {
     return (
       <TextInput
@@ -36,10 +39,13 @@ const Field = ({ keyna, field, value, onChangeValue }) => {
     let radioButtons = [];
     let first = "";
     field["options"].map((option) => {
+      console.log("-D- option = ", option);
       if (first === "") {
         first = option;
       }
-      radioButtons.push(<Picker.Item label={option} value={option} />);
+      radioButtons.push(
+        <Picker.Item label={option.label} value={option.value} />
+      );
     });
     return (
       <Picker

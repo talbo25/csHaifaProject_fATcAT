@@ -47,7 +47,9 @@ const App = () => {
 
   on_button_submit = (objectType, objectData) => {
     // edit or create new
-    // console.log("-D- on_button_submit");
+    console.log("-D- on_button_submit");
+    console.log("-D- objectType ", objectType);
+    console.log("-D- objectData ", objectData);
 
     const uniqueId = DeviceInfo.getUniqueId();
     const requestOptions = {
@@ -62,9 +64,12 @@ const App = () => {
       .then((response) => response.json())
       .then((data) => {
         setDeviceShit(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
       });
 
-    // change_page("home");
     setState(initState);
     return true;
   };
