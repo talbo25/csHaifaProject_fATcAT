@@ -4,18 +4,76 @@ const mongoose = require('mongoose');
 const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
+// const SerialPort = require("serialport");
+const http = require('http');
+const WebSocket = require('ws');
 
-
+// const readSerial = require("./services/readSerial.js")
 const device_data = require('./controllers/device_data.js');
 const verify_bowl = require('./controllers/verify_bowl.js');
 const add_new_object = require('./controllers/add_new_object.js');
 const check_weight = require('./controllers/check_weight.js');
 const gods_intervention = require('./controllers/gods_intervention.js');
+// const blink_blink = require('./controllers/blink_bowl.js');
+
+
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 dotenv.config({path: './config.env'});
+const server = http.createServer(app);//create a server
+const s = new WebSocket.Server({ server });
+
+// WebSocket("ws://192.168.56.1:3000");
+require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+  console.log('addr: '+add);
+});
+
+s.on('connection',function(ws,req){
+	ws.on('message',function(message){
+		console.log("Received: "+message);
+		// s.clients.forEach(function(client){ //broadcast incoming message to all clients (s.clients)
+		// 	if(client!=ws && client.readyState ){ //except to the same client (ws) that sent this message
+		// 		client.send("broadcast: " +message);
+		// 	}
+		// });
+		ws.send("From Server only to sender: "+ message); //send to client where message is from
+	});
+	ws.on('close', function(){
+		console.log("lost one client");
+	});
+	ws.send("HI KIDO");
+	console.log("new client connected");
+});
+
+
+
+// var arduinoSerialPort = new SerialPort("COM6", {  
+//  baudRate: 9600
+// });
+
+// arduinoSerialPort.on('open',function() {
+//   console.log('Serial Port COM6 is opened.');
+// });
+
+
+// app.get('/:action', function (req, res) {
+    
+//    var action = req.params.action || req.param('action');
+    
+//     if(action == 'led'){
+//         arduinoSerialPort.write("w");
+//         return res.send('Led light is on!');
+//     } 
+//     if(action == 'off') {
+//         arduinoSerialPort.write("t");
+//         return res.send("Led light is off!");
+//     }
+    
+//     return res.send('Action: ' + action);
+ 
+// });
 
 // const DB = process.env.DATABASE.replace( 
 // 	'<PASSWORD>', 
@@ -28,12 +86,13 @@ dotenv.config({path: './config.env'});
 // 	useFindAndModify: false,
 // }).then(() =>console.log("DB connected successfully!"));
 
+
 const getAllDeviceData = (id) => {
 	let res = {};
 	database.devices.forEach( device => {
 		if (device.id === id ) {
 			let bowlsIndList = [];
-			let bowlsList = device.bowls.map( bowl => {
+			let bowlsList = device['bowls'].map( bowl => {
 				const curBowl = JSON.parse(JSON.stringify(bowl));
 				const fb = database.bowls.filter (factoryBowl => {
 					if (factoryBowl["id"] === curBowl["id"]) {
@@ -55,6 +114,7 @@ const getAllDeviceData = (id) => {
 	});
 	return res;
 }
+app.get('/arduino_test', (req, res) =>{res.send('Got the temp data, thanks..!!');     console.log(JSON.stringify(req.body));})
 
 app.get('/', (req, res) =>{res.send(database)})
 app.get('/cats', (req,res) => {	res.send(database.cats)})
@@ -65,15 +125,8 @@ app.post('/add_new_object/bowl', add_new_object.handleNewBowl(database,getAllDev
 app.post('/add_new_object/cat', add_new_object.handleNewCat(database,getAllDeviceData));
 app.post('/check_weight', check_weight.handleCheckWeight(database));
 app.post('/gods_intervention', gods_intervention.handleGodsIntervention(database));
-
+// app.post('/blink_blink',blink_blink.handleBlink_blink(database));
 const port = process.env.PORT || 3000;
 app.listen(port, ()=> {
 	console.log(`app is running on ${port}`);
 })
-
-/*
-/devices --> get all devices
-/cats --> gel all cats
-/bowls --> get all bowls
-/cats/:catID
-*/

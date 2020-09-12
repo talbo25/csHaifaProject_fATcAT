@@ -13,7 +13,6 @@ const database = {
 	{
 		"id": "003",
 		"key": "AAB",
-		"activeHours": "s01:00e02:00",
 	},
 	{
 		"id": "004",
@@ -23,7 +22,7 @@ const database = {
 	],
 	 devices : [
 		{
-			"id": "44614646f2e8ebc",
+			"id": "44614646f2e8ebcc",
 			"bowls": [
 				{
 					"id" : "001",
