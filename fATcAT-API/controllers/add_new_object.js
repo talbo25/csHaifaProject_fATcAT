@@ -11,21 +11,18 @@ const handleNewBowl = (database,getAllData) => (req,res) => {
 				// devices
 				database.devices.forEach((device) => {
 					if (device["id"] === currentDeviceID) {
-						console.log("$$$$$$$$$$$$$$ here");
 						// handle first bowl to device
 						if (!("bowls" in device)) {
-							console.log("gulu");
+							// console.log("gulu");
 							device["bowls"] = [];
 						}
 						device.bowls.forEach((bowl) => {
 							// edit exist bowl
 							if (bowl["id"] === objectValues["id"]) {
-								console.log("################# here");
 								bowl["name"] = objectValues["name"];
 								throw BreakException;
 							}
 						})
-						console.log("@@@@@@@@@@@@@@@@@@@@@@@ here");
 						//new bowl
 						//add bowl to dummy database
 						device.bowls.push(

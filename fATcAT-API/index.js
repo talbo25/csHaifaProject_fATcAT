@@ -22,30 +22,30 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 dotenv.config({path: './config.env'});
-const server = http.createServer(app);//create a server
-const s = new WebSocket.Server({ server });
+// const server = http.createServer(app);//create a server
+// const s = new WebSocket.Server({ server });
 
-// WebSocket("ws://192.168.56.1:3000");
-require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-  console.log('addr: '+add);
-});
+// // WebSocket("ws://192.168.56.1:3000");
+// require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+//   console.log('addr: '+add);
+// });
 
-s.on('connection',function(ws,req){
-	ws.on('message',function(message){
-		console.log("Received: "+message);
-		// s.clients.forEach(function(client){ //broadcast incoming message to all clients (s.clients)
-		// 	if(client!=ws && client.readyState ){ //except to the same client (ws) that sent this message
-		// 		client.send("broadcast: " +message);
-		// 	}
-		// });
-		ws.send("From Server only to sender: "+ message); //send to client where message is from
-	});
-	ws.on('close', function(){
-		console.log("lost one client");
-	});
-	ws.send("HI KIDO");
-	console.log("new client connected");
-});
+// s.on('connection',function(ws,req){
+// 	ws.on('message',function(message){
+// 		console.log("Received: "+message);
+// 		// s.clients.forEach(function(client){ //broadcast incoming message to all clients (s.clients)
+// 		// 	if(client!=ws && client.readyState ){ //except to the same client (ws) that sent this message
+// 		// 		client.send("broadcast: " +message);
+// 		// 	}
+// 		// });
+// 		ws.send("From Server only to sender: "+ message); //send to client where message is from
+// 	});
+// 	ws.on('close', function(){
+// 		console.log("lost one client");
+// 	});
+// 	ws.send("HI KIDO");
+// 	console.log("new client connected");
+// });
 
 
 
@@ -126,6 +126,46 @@ app.post('/add_new_object/cat', add_new_object.handleNewCat(database,getAllDevic
 app.post('/check_weight', check_weight.handleCheckWeight(database));
 app.post('/gods_intervention', gods_intervention.handleGodsIntervention(database));
 // app.post('/blink_blink',blink_blink.handleBlink_blink(database));
+app.post('/tin_can', (req,res) => {
+
+	if (!("Major_Tom" in req.body)) {
+
+		return res.status(400).json("-E- WHO ARE YOU?");
+	}
+	const { Major_Tom } = req.body;
+
+	let bowlHours = "";
+	let catsWeights = [];
+	let catsHours = [];
+	let found = false;
+
+	database["bowls"].forEach((bowl) => {
+		if (bowl["id"] === Major_Tom["id"] && bowl["key"] === Major_Tom["key"]){
+			bowlHours = bowl["activeHours"];
+			found = true;
+		}
+	})
+	database["cats"].forEach((cat) => {
+		if (cat["bowlID"] === Major_Tom["id"]) {
+			catsWeights.push(cat["weight"]);
+			catsHours.push(cat["feedingHours"]);
+		}
+	})
+
+	res.json(
+	{
+		"Ground_Control": 
+		{
+			"bowlHours" : bowlHours,
+			"catsWeights": catsWeights,
+			"catsHours": catsHours,
+			"command": "sesomi",
+		},
+	})
+	if (!found) {
+		return res.status(400).json("-E- Couldn't find bowl");
+	}
+})
 const port = process.env.PORT || 3000;
 app.listen(port, ()=> {
 	console.log(`app is running on ${port}`);
