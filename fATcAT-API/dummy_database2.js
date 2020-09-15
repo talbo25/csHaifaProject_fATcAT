@@ -4,20 +4,24 @@ const database = {
 		"id": "001",
 		"key": "AAA",
 		"activeHours": "s02:00e20:00",
+		"method": "automatically",
 	},
 	{
 		"id": "002",
 		"key": "BBB",
 		"activeHours": "s08:00e19:00",
+		"method": "automatically",
 	},
 	{
 		"id": "003",
 		"key": "AAB",
+		"method": "manually",
 	},
 	{
 		"id": "004",
 		"key": "ABB",
 		"activeHours": "s01:00e13:00",
+		"method": "automatically",
 	},
 	],
 	 devices : [

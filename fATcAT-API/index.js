@@ -16,64 +16,11 @@ const check_weight = require('./controllers/check_weight.js');
 const gods_intervention = require('./controllers/gods_intervention.js');
 // const blink_blink = require('./controllers/blink_bowl.js');
 
-
-
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 dotenv.config({path: './config.env'});
-// const server = http.createServer(app);//create a server
-// const s = new WebSocket.Server({ server });
 
-// // WebSocket("ws://192.168.56.1:3000");
-// require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-//   console.log('addr: '+add);
-// });
-
-// s.on('connection',function(ws,req){
-// 	ws.on('message',function(message){
-// 		console.log("Received: "+message);
-// 		// s.clients.forEach(function(client){ //broadcast incoming message to all clients (s.clients)
-// 		// 	if(client!=ws && client.readyState ){ //except to the same client (ws) that sent this message
-// 		// 		client.send("broadcast: " +message);
-// 		// 	}
-// 		// });
-// 		ws.send("From Server only to sender: "+ message); //send to client where message is from
-// 	});
-// 	ws.on('close', function(){
-// 		console.log("lost one client");
-// 	});
-// 	ws.send("HI KIDO");
-// 	console.log("new client connected");
-// });
-
-
-
-// var arduinoSerialPort = new SerialPort("COM6", {  
-//  baudRate: 9600
-// });
-
-// arduinoSerialPort.on('open',function() {
-//   console.log('Serial Port COM6 is opened.');
-// });
-
-
-// app.get('/:action', function (req, res) {
-    
-//    var action = req.params.action || req.param('action');
-    
-//     if(action == 'led'){
-//         arduinoSerialPort.write("w");
-//         return res.send('Led light is on!');
-//     } 
-//     if(action == 'off') {
-//         arduinoSerialPort.write("t");
-//         return res.send("Led light is off!");
-//     }
-    
-//     return res.send('Action: ' + action);
- 
-// });
 
 // const DB = process.env.DATABASE.replace( 
 // 	'<PASSWORD>', 
@@ -86,9 +33,34 @@ dotenv.config({path: './config.env'});
 // 	useFindAndModify: false,
 // }).then(() =>console.log("DB connected successfully!"));
 
+////////////////////////////////
+// const bowlschema = new mongoose.Schema({
+// 	key:{
+// 		type: String,
+// 		require: [true, 'Bowl must has a key'],
+// 		unique: true
+// 	},
+// 	activeHours: String,
+// });
+
+// const bowl = mongoose.model('Bowl', bowlschema);
+
+// const testBowl = new bowl( {
+// 	key: "CCC"
+// });
+
+// testBowl.save()
+// .then( doc => {
+// 	console.log(doc);
+// })
+// .catch(err => {
+// 	console.log("ERROR... ",err)
+// });
+//////////////////////////
 
 const getAllDeviceData = (id) => {
 	let res = {};
+	console.log("id is ",id);
 	database.devices.forEach( device => {
 		if (device.id === id ) {
 			let bowlsIndList = [];
@@ -98,6 +70,7 @@ const getAllDeviceData = (id) => {
 					if (factoryBowl["id"] === curBowl["id"]) {
 						curBowl["cats"] = factoryBowl["cats"];
 						curBowl["activeHours"] = factoryBowl["activeHours"];
+						curBowl["method"] = factoryBowl["method"];
 						bowlsIndList = bowlsIndList.concat(factoryBowl["id"]);
 					}
 				})
@@ -114,6 +87,19 @@ const getAllDeviceData = (id) => {
 	});
 	return res;
 }
+
+const change_method = (id) => {
+	database.bowls.forEach( bowl => {
+		if ( bowl["id"] === id ) {
+			if (bowl["method"] === "automatically") {
+				bowl["method"] = "manually";
+			} else {
+				bowl["method"] = "automatically";
+			}
+			return bowl;
+		}
+	})
+}
 app.get('/arduino_test', (req, res) =>{res.send('Got the temp data, thanks..!!');     console.log(JSON.stringify(req.body));})
 
 app.get('/', (req, res) =>{res.send(database)})
@@ -124,7 +110,7 @@ app.post('/verify_bowl', verify_bowl.handleVerifyBowl(database));
 app.post('/add_new_object/bowl', add_new_object.handleNewBowl(database,getAllDeviceData));
 app.post('/add_new_object/cat', add_new_object.handleNewCat(database,getAllDeviceData));
 app.post('/check_weight', check_weight.handleCheckWeight(database));
-app.post('/gods_intervention', gods_intervention.handleGodsIntervention(database));
+app.post('/gods_intervention', gods_intervention.handleGodsIntervention(database,change_method));
 // app.post('/blink_blink',blink_blink.handleBlink_blink(database));
 app.post('/tin_can', (req,res) => {
 
@@ -138,10 +124,12 @@ app.post('/tin_can', (req,res) => {
 	let catsWeights = [];
 	let catsHours = [];
 	let found = false;
+	let method = "";
 
 	database["bowls"].forEach((bowl) => {
 		if (bowl["id"] === Major_Tom["id"] && bowl["key"] === Major_Tom["key"]){
 			bowlHours = bowl["activeHours"];
+			method = bowl["method"];
 			found = true;
 		}
 	})
@@ -159,7 +147,7 @@ app.post('/tin_can', (req,res) => {
 			"bowlHours" : bowlHours,
 			"catsWeights": catsWeights,
 			"catsHours": catsHours,
-			"command": "sesomi",
+			"method": method,
 		},
 	})
 	if (!found) {
