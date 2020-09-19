@@ -17,6 +17,7 @@
     "mongoose": "^5.10.2",
     "nodemon": "^2.0.4",
     "serialport": "^9.0.1",
+    "socket.io": "^2.3.0",
     "ws": "^7.3.1"
   }
 }
