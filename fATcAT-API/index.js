@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 // const SerialPort = require("serialport");
 const http = require('http');
-const WebSocket = require('ws');
+const socketio = require("socket.io");
 
 // const readSerial = require("./services/readSerial.js")
 const device_data = require('./controllers/device_data.js');
@@ -20,8 +20,36 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 dotenv.config({path: './config.env'});
+const server = http.createServer(app);
+const io = socketio(server);
 
+// socket io configurations
+let interval;
+const currentConnectedClients = {};
 
+io.on('connection', socket => {
+  console.log("New client connected");
+  // console.log("Socket = ", socket);
+  
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+    delete currentConnectedClients[socket.id];
+  });
+
+  socket.on('storeClientInfo', function (data) {
+  		currentConnectedClients[socket.id] = 
+  		{
+  			customId : data.customId,
+  			timeout : null,
+  		}
+
+  		console.log("-D- socket on : ",socket.id);
+  		console.log(currentConnectedClients[socket.id]);
+
+	});
+});
+
+////////////////////////////////
 // const DB = process.env.DATABASE.replace( 
 // 	'<PASSWORD>', 
 // 	process.env.DATABASE_PASSWORD
@@ -33,7 +61,7 @@ dotenv.config({path: './config.env'});
 // 	useFindAndModify: false,
 // }).then(() =>console.log("DB connected successfully!"));
 
-////////////////////////////////
+
 // const bowlschema = new mongoose.Schema({
 // 	key:{
 // 		type: String,
@@ -87,14 +115,38 @@ const getAllDeviceData = (id) => {
 	});
 	return res;
 }
+const get_socketid_by_customid = (deviceID) =>{
+	let found = false;
+	Object.keys(currentConnectedClients).forEach(clientID => {
+		if(currentConnectedClients[clientID].customId === deviceID){
+			found = clientID;
+			return;
+		}
+	});
+	return found;
+}
 
-const change_method = (id) => {
+const change_method = (bowlID, deviceID) => {
 	database.bowls.forEach( bowl => {
-		if ( bowl["id"] === id ) {
+		if ( bowl["id"] === bowlID ) {
+			const socketID = get_socketid_by_customid(deviceID);
 			if (bowl["method"] === "automatically") {
 				bowl["method"] = "manually";
+				if (!socketID) {
+					return false;
+				}
+				currentConnectedClients[socketID].timeout = setTimeout( () => {
+					console.log("setTimeout for ", socketID);
+					bowl["method"] = "automatically";
+					io.to(socketID).emit("bowl_to_auto", 
+						{
+							bowlID: bowlID,
+							message: `Bowl is back to automatically method`
+						});
+				},5000);
 			} else {
 				bowl["method"] = "automatically";
+				clearTimeout(currentConnectedClients[socketID].timeout);
 			}
 			return bowl;
 		}
@@ -142,19 +194,16 @@ app.post('/tin_can', (req,res) => {
 
 	res.json(
 	{
-		"Ground_Control": 
-		{
-			"bowlHours" : bowlHours,
-			"catsWeights": catsWeights,
-			"catsHours": catsHours,
-			"method": method,
-		},
+		"bowlHours" : bowlHours,
+		"catsWeights": catsWeights,
+		"catsHours": catsHours,
+		"method": method,
 	})
 	if (!found) {
 		return res.status(400).json("-E- Couldn't find bowl");
 	}
 })
 const port = process.env.PORT || 3000;
-app.listen(port, ()=> {
+server.listen(port, ()=> {
 	console.log(`app is running on ${port}`);
 })

@@ -1,11 +1,16 @@
 const handleGodsIntervention = (database, change_method) => (req,res) => {
-	const {bowlID} = req.body;
+	const {bowlID, deviceID} = req.body;
 	let found = false;
 	database.bowls.forEach((bowl) => {
 		if (bowl["id"] === bowlID) {
 			console.log("open sesomi! or close...");
-			change_method(bowlID);
-			found = bowl;
+			try {
+				change_method(bowlID,deviceID);
+				found = bowl;
+			} catch (err) {
+				console.warn("change_method : ",err);
+			}
+			
 		}
 	});
 
