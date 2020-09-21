@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from "react-native";
 
-const ListBox = ({ head, entries, change_page }) => {
+const ListBox = ({ head, entries, change_page, uniqueId }) => {
   console.log("entries = ", entries);
   return (
     <View style={styles.container}>
@@ -21,7 +21,7 @@ const ListBox = ({ head, entries, change_page }) => {
           {entries.length == 0 ? (
             <Text> No {head} to show...</Text>
           ) : (
-            <EntriesList head={head} entries={entries} />
+            <EntriesList head={head} entries={entries} uniqueId={uniqueId} />
           )}
         </ScrollView>
       </SafeAreaView>

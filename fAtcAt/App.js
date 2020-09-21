@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import TopBar from "./components/TopBar/TopBar";
 import HomePage from "./Pages/HomePage/HomePage";
 import CatForm from "./Pages/CatForm/CatForm";
 import BowlForm from "./Pages/BowlForm/BowlForm";
 import NewBowl from "./Pages/NewBowl/NewBowl";
+import LogsPage from "./Pages/LogsPage/LogsPage";
 import DeviceInfo from "react-native-device-info";
+import { socket } from "./Services/Socket/Socket";
 
 const initState = () => {
   const state = {
@@ -18,11 +20,11 @@ const initState = () => {
 const App = () => {
   const [state, setState] = useState(initState);
   const [deviceShit, setDeviceShit] = useState({ cats: [], bowls: [] });
+  const uniqueId = DeviceInfo.getUniqueId();
 
   useEffect(() => {
     const fetchData = async () => {
       const state = {};
-      const uniqueId = DeviceInfo.getUniqueId();
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -30,13 +32,24 @@ const App = () => {
           id: uniqueId,
         }),
       };
+
       fetch("http://10.0.3.2:3000/device_data", requestOptions)
         .then((response) => response.json())
         .then((data) => {
           if (data["cats"]) setDeviceShit(data);
+        })
+        .catch((err) => {
+          console.log("OOPS... ", err);
         });
     };
     fetchData();
+
+    socket.on("connect", function (data) {
+      socket.emit("storeClientInfo", { customId: uniqueId });
+    });
+    socket.on("notification", (data) => {
+      console.log(data);
+    });
   }, []);
 
   const { cats, bowls } = deviceShit;
@@ -93,12 +106,14 @@ const App = () => {
     <View style={styles.mainContainer}>
       <TopBar style={styles.statusBar} />
       <View style={styles.pageContainer}>
-        {state["currentPage"] === "home" ? (
+        <LogsPage uniqueId={uniqueId} />
+        {/* {state["currentPage"] === "home" ? (
           <HomePage
             cats={cats}
             bowls={bowls}
             change_page={change_page}
             change_edit_target={change_edit_target}
+            uniqueId={uniqueId}
           />
         ) : state["currentPage"] === "cat_form" ? (
           <CatForm
@@ -114,7 +129,7 @@ const App = () => {
           />
         ) : (
           <NewBowl />
-        )}
+        )} */}
       </View>
     </View>
   );

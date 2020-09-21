@@ -37,7 +37,7 @@ const CatForm = ({ bowls, on_button_submit, editTarget }) => {
           weight: {
             label: "Weight",
             type: "slider",
-            options: [0.5, 11.0],
+            options: [0.5, 21.3],
           },
           bowlID: {
             label: "Bowl",

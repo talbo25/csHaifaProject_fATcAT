@@ -21,7 +21,10 @@ const find_bowl_button = (objectType, objectData) => {
     }),
   };
 
-  return fetch(`http://10.0.3.2:3000/verify_bowl`, requestOptions)
+  return fetch(
+    `https://evening-woodland-16568.herokuapp.com/verify_bowl`,
+    requestOptions
+  )
     .then((response) => response.json())
     .then((data) => {
       if (data["id"]) {
