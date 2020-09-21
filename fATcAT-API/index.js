@@ -14,6 +14,7 @@ const verify_bowl = require('./controllers/verify_bowl.js');
 const add_new_object = require('./controllers/add_new_object.js');
 const check_weight = require('./controllers/check_weight.js');
 const gods_intervention = require('./controllers/gods_intervention.js');
+const tin_can = require('./controllers/tin_can.js');
 // const blink_blink = require('./controllers/blink_bowl.js');
 
 const app = express();
@@ -152,6 +153,28 @@ const change_method = (bowlID, deviceID) => {
 		}
 	})
 }
+
+const data = [
+  {
+    date: "1/1/19 11:12",
+    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflbls",
+  },
+  {
+    date: "5/2/20 12:30",
+    info: "zzz",
+  },
+  {
+    date: "1/4/19 11:22",
+    info:
+      "blaaldbalbalablbalablalba blalblsd blfdlbdflbls\ndsadasdad\ndsdsadasd",
+  },
+  {
+    date: "4/1/19 09:40",
+    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflblsaaa",
+  },
+];
+
+
 app.get('/arduino_test', (req, res) =>{res.send('Got the temp data, thanks..!!');     console.log(JSON.stringify(req.body));})
 
 app.get('/', (req, res) =>{res.send(database)})
@@ -164,45 +187,21 @@ app.post('/add_new_object/cat', add_new_object.handleNewCat(database,getAllDevic
 app.post('/check_weight', check_weight.handleCheckWeight(database));
 app.post('/gods_intervention', gods_intervention.handleGodsIntervention(database,change_method));
 // app.post('/blink_blink',blink_blink.handleBlink_blink(database));
-app.post('/tin_can', (req,res) => {
-
-	if (!("Major_Tom" in req.body)) {
-
-		return res.status(400).json("-E- WHO ARE YOU?");
-	}
-	const { Major_Tom } = req.body;
-
-	let bowlHours = "";
-	let catsWeights = [];
-	let catsHours = [];
-	let found = false;
-	let method = "";
-
-	database["bowls"].forEach((bowl) => {
-		if (bowl["id"] === Major_Tom["id"] && bowl["key"] === Major_Tom["key"]){
-			bowlHours = bowl["activeHours"];
-			method = bowl["method"];
-			found = true;
+app.post('/tin_can', tin_can.handleTinCan(database));
+app.post('/logs', (req, res) =>{
+	let logs = [];
+	console.log("data.length = ",data.length);
+	const { deviceID } = req.body;
+	database["devices"].forEach((device) => {
+		if (device["id"] === deviceID && "logs" in device){
+			console.log("ZA");
+			logs = device["logs"];
 		}
 	})
-	database["cats"].forEach((cat) => {
-		if (cat["bowlID"] === Major_Tom["id"]) {
-			catsWeights.push(cat["weight"]);
-			catsHours.push(cat["feedingHours"]);
-		}
-	})
+	console.log("-D- logs are ", logs);
+	res.send({size:logs.length, logs: logs});
+});
 
-	res.json(
-	{
-		"bowlHours" : bowlHours,
-		"catsWeights": catsWeights,
-		"catsHours": catsHours,
-		"method": method,
-	})
-	if (!found) {
-		return res.status(400).json("-E- Couldn't find bowl");
-	}
-})
 const port = process.env.PORT || 3000;
 server.listen(port, ()=> {
 	console.log(`app is running on ${port}`);

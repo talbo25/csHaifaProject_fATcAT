@@ -37,6 +37,59 @@ const database = {
 					"name" : "kitchen",
 				}
 			],
+			"logs": [
+				  {
+				    date: "1/1/19 11:12",
+				    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflbls",
+				  },
+				  {
+				    date: "5/2/20 12:30",
+				    info: "zzz",
+				  },
+				  {
+				    date: "1/4/19 11:22",
+				    info:
+				      "blaaldbalbalablbalablalba blalblsd blfdlbdflbls\ndsadasdad\ndsdsadasd",
+				  },
+				  {
+				    date: "4/1/19 09:40",
+				    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflblsaaa",
+				  },
+				  {
+				    date: "1/1/19 11:12",
+				    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflbls",
+				  },
+				  {
+				    date: "5/2/20 12:30",
+				    info: "zzz",
+				  },
+				  {
+				    date: "1/4/19 11:22",
+				    info:
+				      "blaaldbalbalablbalablalba blalblsd blfdlbdflbls\ndsadasdad\ndsdsadasd",
+				  },
+				  {
+				    date: "4/1/19 09:40",
+				    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflblsaaa",
+				  },
+				  {
+				    date: "1/1/19 11:12",
+				    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflbls",
+				  },
+				  {
+				    date: "5/2/20 12:30",
+				    info: "zzz",
+				  },
+				  {
+				    date: "1/4/19 11:22",
+				    info:
+				      "blaaldbalbalablbalablalba blalblsd blfdlbdflbls\ndsadasdad\ndsdsadasd",
+				  },
+				  {
+				    date: "4/1/19 09:40",
+				    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflblsaaa",
+				  },
+			],
 		},
 	],
 	cats: [
