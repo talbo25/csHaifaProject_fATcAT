@@ -4,18 +4,17 @@ const mongoose = require('mongoose');
 const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
-// const SerialPort = require("serialport");
 const http = require('http');
 const socketio = require("socket.io");
 
-// const readSerial = require("./services/readSerial.js")
+const get_objects = require('./controllers/get_objects.js');
 const device_data = require('./controllers/device_data.js');
 const verify_bowl = require('./controllers/verify_bowl.js');
 const add_new_object = require('./controllers/add_new_object.js');
 const check_weight = require('./controllers/check_weight.js');
 const gods_intervention = require('./controllers/gods_intervention.js');
 const tin_can = require('./controllers/tin_can.js');
-// const blink_blink = require('./controllers/blink_bowl.js');
+const logs_request = require('./controllers/logs_request.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -46,21 +45,20 @@ io.on('connection', socket => {
 
   		console.log("-D- socket on : ",socket.id);
   		console.log(currentConnectedClients[socket.id]);
-
 	});
 });
 
 ////////////////////////////////
-// const DB = process.env.DATABASE.replace( 
-// 	'<PASSWORD>', 
-// 	process.env.DATABASE_PASSWORD
-// 	);
+const DB = process.env.DATABASE.replace( 
+	'<PASSWORD>', 
+	process.env.DATABASE_PASSWORD
+	);
 
-// mongoose.connect(DB, {
-// 	useNewUrlParser: true,
-// 	useCreateIndex: true,
-// 	useFindAndModify: false,
-// }).then(() =>console.log("DB connected successfully!"));
+mongoose.connect(DB, {
+	useNewUrlParser: true,
+	useCreateIndex: true,
+	useFindAndModify: false,
+}).then(() =>console.log("DB connected successfully!"));
 
 
 // const bowlschema = new mongoose.Schema({
@@ -154,53 +152,17 @@ const change_method = (bowlID, deviceID) => {
 	})
 }
 
-const data = [
-  {
-    date: "1/1/19 11:12",
-    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflbls",
-  },
-  {
-    date: "5/2/20 12:30",
-    info: "zzz",
-  },
-  {
-    date: "1/4/19 11:22",
-    info:
-      "blaaldbalbalablbalablalba blalblsd blfdlbdflbls\ndsadasdad\ndsdsadasd",
-  },
-  {
-    date: "4/1/19 09:40",
-    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflblsaaa",
-  },
-];
-
-
-app.get('/arduino_test', (req, res) =>{res.send('Got the temp data, thanks..!!');     console.log(JSON.stringify(req.body));})
-
 app.get('/', (req, res) =>{res.send(database)})
-app.get('/cats', (req,res) => {	res.send(database.cats)})
-app.get('/bowls', (req,res) => { res.send(database.bowls)});
+app.get('/cats', get_objects.handleGetAllCats());
+app.get('/bowls', get_objects.handleGetAllBowls());
 app.post('/device_data', device_data.handleDeviceData(database,getAllDeviceData));
 app.post('/verify_bowl', verify_bowl.handleVerifyBowl(database));
 app.post('/add_new_object/bowl', add_new_object.handleNewBowl(database,getAllDeviceData));
 app.post('/add_new_object/cat', add_new_object.handleNewCat(database,getAllDeviceData));
 app.post('/check_weight', check_weight.handleCheckWeight(database));
 app.post('/gods_intervention', gods_intervention.handleGodsIntervention(database,change_method));
-// app.post('/blink_blink',blink_blink.handleBlink_blink(database));
 app.post('/tin_can', tin_can.handleTinCan(database));
-app.post('/logs', (req, res) =>{
-	let logs = [];
-	console.log("data.length = ",data.length);
-	const { deviceID } = req.body;
-	database["devices"].forEach((device) => {
-		if (device["id"] === deviceID && "logs" in device){
-			console.log("ZA");
-			logs = device["logs"];
-		}
-	})
-	console.log("-D- logs are ", logs);
-	res.send({size:logs.length, logs: logs});
-});
+app.post('/logs', logs_request.handleLogs(database));
 
 const port = process.env.PORT || 3000;
 server.listen(port, ()=> {

@@ -6,6 +6,7 @@ const deviceSchema = new mongoose.Schema({
 		require: [true, 'Device must has an ID'],
 	},
 	bowls: Array,
+	logs: Array,
 });
 
 const Device = mongoose.model('Device', deviceSchema);
