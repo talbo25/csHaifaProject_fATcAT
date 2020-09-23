@@ -1,9 +1,9 @@
 const utils = require('./../services/utils.js');
 const Device = require('./../models/deviceModel.js');
 
-const handleDeviceData = (database, getAllDeviceData) => (req,res) => {
+const handleDeviceData = (database, getAllDeviceData) => async (req,res) => {
 	const { id } = req.body;
-	let found = getAllDeviceData(id);
+	let found = await utils.getAllDeviceData(id);
 	// console.log("handleDeviceData found = ",found);
 	if (Object.keys(found).length === 0) {
 		// new device 

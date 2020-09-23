@@ -5,32 +5,61 @@ const Device = require('./../models/deviceModel.js');
 exports.getAllDeviceData = async (id) => {
 	let res = {};
 	let bowlsIndList = [];
+	let bowlsList=[];
 
 	console.log("id is ",id);
-	const targetDevice = await Device.findOne({ id: id});
+	const targetDevice = await Device.findOne({ deviceID: id});
 	console.log("targetDevice is ",targetDevice);
 
-	let bowlsList = targetDevice['bowls'].map( bowl => {
-		const curBowl = JSON.parse(JSON.stringify(bowl));
-		const fb =  Bowl.findOne({id:bowl["id"]});
-		console.log("fb is ",fb);
-		curBowl["cats"] = fb["cats"];
-		curBowl["activeHours"] = fb["activeHours"];
-		curBowl["method"] = fb["method"];
-		bowlsIndList = bowlsIndList.concat(fb["id"]);
-		return curBowl;
-
-	})
-	console.log(bowlsIndList);
-	console.log("bowlsList is ",bowlsList);
-
-	let catsList = Cat.find({bowlID: { $in: bowlsIndList}});
-	let resultDict = {
-		"cats" : catsList,
-		"bowls" : bowlsList,
+	const findBowlByID = (id) => {
+		console.log("findBowlByID id = ",id);
+		return Bowl.findOne({bowlID:id});
 	};
-	res = resultDict;
-	return res;
+
+	let promises = targetDevice['bowls'].map( bowl => {
+		return findBowlByID(bowl["bowlID"])
+		.then(fb => {
+			const fbB = JSON.parse(JSON.stringify(fb));
+			const curBowl = JSON.parse(JSON.stringify(bowl));
+			console.log("fb is ",fb);
+			console.log("fbB is ",fbB);
+			// curBowl["cats"] = fb["cats"];
+			Object.keys(fbB).forEach(key => {
+				console.log("key = ",key);
+				if (key !== "_id" && key !== "bowlID") {
+					console.log("to curBowl");
+					curBowl[key] = fb[key];
+				}
+				
+			})
+			bowlsIndList = bowlsIndList.concat(fb["bowlID"]);
+			console.log("curBowl is ",curBowl);
+			return curBowl;
+		})
+	})
+	// Wait for all Promises to complete
+	return Promise.all(promises)
+	  .then(async results => {
+	  	console.log("TADA results = ",results);
+	    bowlsList = results;
+
+		console.log("bowlsIndList is ",bowlsIndList);
+		console.log("bowlsList is ",bowlsList);
+
+		let catsList = await Cat.find({bowlID: { $in: bowlsIndList}});
+		let resultDict = {
+			"cats" : catsList,
+			"bowls" : bowlsList,
+		};
+		res = resultDict;
+		console.log("res = ", res);
+		return res;
+	  })
+	  .catch(e => {
+	    console.error(e);
+	  })
+
+
 }
 exports.get_socketid_by_customid = (deviceID) =>{
 	let found = false;

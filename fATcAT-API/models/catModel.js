@@ -14,7 +14,7 @@ const catSchema = new mongoose.Schema({
 		require: [true, 'Cat must has a weight'],
 	},
 	bowlID:{
-		type: String,
+		type: Number,
 		require: [true, 'Cat must connect to a bowl'],
 	},
 	feedingHours:{
