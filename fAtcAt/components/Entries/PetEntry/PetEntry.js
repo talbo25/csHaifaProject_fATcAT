@@ -2,11 +2,11 @@ import React from "react";
 import { StyleSheet, Text, View, Image, Button, Alert } from "react-native";
 
 const PetEntry = ({ cat, change_edit_target }) => {
-  const { id, name, bowl } = cat;
+  const { name, bowl } = cat;
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: `https://robohash.org/${id}?size=100x100&set=set4` }}
+        source={{ uri: `https://robohash.org/${name}?size=100x100&set=set4` }}
         style={{ width: 30, height: 30 }}
       />
       <Text>{name}</Text>

@@ -13,7 +13,7 @@ import {
 
 const BowlEntry = ({ bowl, change_edit_target, uniqueId }) => {
   console.log("BowlEntry ", bowl);
-  const { id, name } = bowl;
+  const { name } = bowl;
   const [bowlMethod, setMethod] = useState({ method: bowl["method"] });
 
   socket.on("bowl_to_auto", (data) => {
@@ -56,7 +56,7 @@ const BowlEntry = ({ bowl, change_edit_target, uniqueId }) => {
         <React.Fragment>
           <Image
             source={{
-              uri: `https://robohash.org/${id}?size=100x100&set=set3`,
+              uri: `https://robohash.org/${name}?size=100x100&set=set3`,
             }}
             style={[
               styles.imageSize,
@@ -65,7 +65,7 @@ const BowlEntry = ({ bowl, change_edit_target, uniqueId }) => {
           />
           <Image
             source={{
-              uri: `https://robohash.org/${id}?size=100x100&set=set3`,
+              uri: `https://robohash.org/${name}?size=100x100&set=set3`,
             }}
             style={{
               width: 30,

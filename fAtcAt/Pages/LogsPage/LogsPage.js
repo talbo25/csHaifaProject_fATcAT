@@ -3,26 +3,26 @@ import Logs from "../../components/Logs/Logs";
 import { StyleSheet, Text, View, ScrollView, SafeAreaView } from "react-native";
 import { socket } from "./../../Services/Socket/Socket";
 
-const data = [
-  {
-    date: "1/1/19 11:12",
-    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflbls",
-  },
-  {
-    date: "5/2/20 12:30",
-    info: "zzz",
-  },
-  {
-    date: "1/4/19 11:22",
-    info:
-      "blaaldbalbalablbalablalba blalblsd blfdlbdflbls\ndsadasdad\ndsdsadasd",
-  },
-  {
-    date: "4/1/19 09:40",
-    info: "blaaldbalbalablbalablalbablalblsdblfdlbdflblsaaa",
-  },
-];
-const edata = [];
+// const data = [
+//   {
+//     date: "1/1/19 11:12",
+//     info: "blaaldbalbalablbalablalbablalblsdblfdlbdflbls",
+//   },
+//   {
+//     date: "5/2/20 12:30",
+//     info: "zzz",
+//   },
+//   {
+//     date: "1/4/19 11:22",
+//     info:
+//       "blaaldbalbalablbalablalba blalblsd blfdlbdflbls\ndsadasdad\ndsdsadasd",
+//   },
+//   {
+//     date: "4/1/19 09:40",
+//     info: "blaaldbalbalablbalablalbablalblsdblfdlbdflblsaaa",
+//   },
+// ];
+// const edata = [];
 
 const get_logs = (deviceID) => {
   console.log("get_logs ", deviceID);

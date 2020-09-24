@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 20,
     flex: 1,
+    borderRadius: 18,
   },
   HeaderContainer: {
     flex: 1,

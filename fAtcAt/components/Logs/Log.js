@@ -18,7 +18,11 @@ const Log = ({ log }) => {
     <TouchableOpacity onPress={() => toggle_height()}>
       <View style={styles.container}>
         <Text>{date}</Text>
-        <Text numberOfLines={numOfLines} minimumFontScale={0.1}>
+        <Text
+          numberOfLines={numOfLines}
+          minimumFontScale={0.1}
+          style={{ width: "93%" }}
+        >
           {info}
         </Text>
       </View>

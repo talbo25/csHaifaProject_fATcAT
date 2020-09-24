@@ -106,8 +106,7 @@ const App = () => {
     <View style={styles.mainContainer}>
       <TopBar style={styles.statusBar} />
       <View style={styles.pageContainer}>
-        <LogsPage uniqueId={uniqueId} />
-        {/* {state["currentPage"] === "home" ? (
+        {state["currentPage"] === "home" ? (
           <HomePage
             cats={cats}
             bowls={bowls}
@@ -127,9 +126,11 @@ const App = () => {
             on_button_submit={on_button_submit}
             editTarget={state["editTarget"]}
           />
+        ) : state["currentPage"] === "logs_page" ? (
+          <LogsPage uniqueId={uniqueId} />
         ) : (
           <NewBowl />
-        )} */}
+        )}
       </View>
     </View>
   );

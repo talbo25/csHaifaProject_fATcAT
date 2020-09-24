@@ -18,6 +18,18 @@ const TopBar = () => {
       </Icon.Button>
 
       <Text>fATcAT</Text>
+
+      <Icon.Button
+        name="newspaper-o"
+        size={15}
+        color="white"
+        backgroundColor="#3b5998"
+        onPress={() => change_page("logs_page")}
+      >
+        <Text style={{ fontFamily: "Arial", fontSize: 15, color: "white" }}>
+          Logs
+        </Text>
+      </Icon.Button>
     </View>
   );
 };
