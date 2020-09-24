@@ -1,12 +1,22 @@
-const handleLogs = (database) => (req,res) => {
-	let logs = [];
+const Device = require('./../models/deviceModel.js');
+
+const handleLogs = () => async (req,res) => {
 	const { deviceID } = req.body;
-	database["devices"].forEach((device) => {
-		if (device["id"] === deviceID && "logs" in device){
-			logs = device["logs"];
+	try{
+		const reqLogs = await Device.findOne({deviceID:deviceID},{logs:1});
+		if (!reqLogs){
+			throw("-ERROR- Couldn't get logs");
 		}
-	})
-	res.send({size:logs.length, logs: logs});
+
+		res.send({
+			size:reqLogs["logs"].length, 
+			logs: reqLogs.logs
+		});
+
+	} catch (err) {
+		console.warn(err);
+		return res.status(400).json(err);
+	}
 }
 
 module.exports = {

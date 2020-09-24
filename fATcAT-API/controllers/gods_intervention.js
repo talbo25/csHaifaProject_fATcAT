@@ -1,19 +1,19 @@
-const handleGodsIntervention = (database, change_method) => (req,res) => {
-	const {bowlID, deviceID} = req.body;
-	let found = false;
-	database.bowls.forEach((bowl) => {
-		if (bowl["id"] === bowlID) {
-			console.log("open sesomi! or close...");
-			try {
-				change_method(bowlID,deviceID);
-				found = bowl;
-			} catch (err) {
-				console.warn("change_method : ",err);
-			}
-			
-		}
-	});
+const utils = require('./../services/utils.js');
 
+const handleGodsIntervention = () => async (req,res) => {
+	const {bowlID, deviceID} = req.body;
+	if (bowlID === undefined || deviceID === undefined) {
+		return res.status(400).json("bowlID and deviceID are mandatory!");
+	}
+	let found = false;
+
+	console.log("open sesomi! or close...");
+	try {
+		found = utils.change_method(bowlID,deviceID);
+	} catch (err) {
+		console.warn("change_method : ",err);
+	}
+			
 	if (!found) {
 		return res.status(400).json("Couldn't find bowl by id - "+bowlID);
 	}

@@ -1,41 +1,54 @@
-const handleVerifyBowl = (database) => (req,res) => {
-	const BreakException= {};
-	const { id, key} = req.body;
-	console.log("-D- verify_bowl");
-	console.log("-D- id = ",id);
-	console.log("-D- key = ",key);
-	// console.log(database);
-	let found = false;
-	let tempBowl = { "id" : id};
-	database.bowls.forEach((bowl) => { 
-		if ((id === bowl["id"]) && (key === bowl["key"])) {
-			console.log("FOUND!");
-			found = true;
-			if (Object.keys(bowl).includes("cats")) {
-				tempBowl["cats"] = bowl["cats"];
-			}
-			if (Object.keys(bowl).includes("activeHours")) {
-				tempBowl["activeHours"] = bowl["activeHours"];
-			}
+const Cat = require('./../models/catModel.js');
+const Bowl = require('./../models/bowlModel.js');
+const Device = require('./../models/deviceModel.js');
 
-			// try {
-			// 	database.bowls.forEach((bowl) => {
-			// 		if (bowl["id"] === id) {
-			// 			Object.keys(bowl).forEach((key) => {
-			// 				tempBowl[key] = bowl[key];
-			// 			})
-			// 			throw BreakException;
-			// 		}
-				
-			// 	})	
-			// } catch (e) {
-			// 	if (e !== BreakException) throw e;
-			// }
-			res.json(tempBowl);
+const handleVerifyBowl = (database) => async (req,res) => {
+	const BreakException= {};
+	const { bowlID, key} = req.body;
+
+	try {
+		const myBowl = await Bowl.findOne({
+			bowlID: bowlID,
+			key : key
+		},{
+			activeHours:1,
+			method:1
+		});
+
+		const numBowlCats = await Cat.find({
+			bowlID: bowlID,
+		}).then(res => res.length);
+
+		const numBowlDEevices = await Device.find({
+			"bowls.bowlID": bowlID,
+		}).then(res => res.length);
+
+		// console.log("myBowl = ",myBowl);
+		// console.log("numBowlCats = ",numBowlCats);
+		// console.log("numBowlDEevices = ",numBowlDEevices);
+
+		if (!myBowl) {
+			throw("-E- null at myBowl request");
 		}
-	});
-	if (!found){
-		res.status(400).json("Couldn't find bowl");
+
+		if (!numBowlCats) {
+			throw("-E- null at numBowlCats request");
+		}
+
+		if (!numBowlDEevices) {
+			throw("-E- null at numBowlDEevices request");
+		}
+
+		res.json(
+		{
+			"bowlHours" : myBowl["activeHours"],
+			"#cats": numBowlCats,
+			"#devices": numBowlDEevices.length,
+			"method": myBowl["method"],
+		});
+	} catch (err) {
+		console.warn(err);
+		return res.status(400).json(err);
 	}
 }
 
