@@ -2,12 +2,12 @@ const utils = require('./../services/utils.js');
 const Device = require('./../models/deviceModel.js');
 
 const handleDeviceData = () => async (req,res) => {
-	const { id } = req.body;
-	let found = await utils.getAllDeviceData(id);
+	const { deviceID } = req.body;
+	let found = await utils.getAllDeviceData(deviceID);
 	if (!found) {
 		// new device 
-		console.log("new device id = ",id);
-		const newDevice = new Device({deviceID:id});
+		console.log("new device id = ",deviceID);
+		const newDevice = new Device({deviceID:deviceID});
 		newDevice.save()
 		.then( doc => {
 			console.log(doc);

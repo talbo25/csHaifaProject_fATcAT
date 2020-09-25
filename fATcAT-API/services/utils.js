@@ -1,7 +1,9 @@
 const Cat = require('./../models/catModel.js');
 const Bowl = require('./../models/bowlModel.js');
 const Device = require('./../models/deviceModel.js');
-const {io,currentConnectedClients} = require('./../index.js');
+// const io = require('./../index.js').io;
+// const currentConnectedClients = require('./../index.js').currentConnectedClients;
+const {send_message_to_device, get_socketid_by_customid,set_method_timer,clear_timeout} = require('./sockets.js');
 
 exports.getAllDeviceData = async (id) => {
 	let res = {};
@@ -14,7 +16,7 @@ exports.getAllDeviceData = async (id) => {
 	// console.log("targetDevice is ",targetDevice);
 
 	const findBowlByID = (id) => {
-		console.log("findBowlByID id = ",id);
+		// console.log("findBowlByID id = ",id);
 		return Bowl.findOne({bowlID:id});
 	};
 
@@ -44,7 +46,7 @@ exports.getAllDeviceData = async (id) => {
 			"bowls" : bowlsList,
 		};
 		res = resultDict;
-		console.log("getAllDeviceData - res = ", res);
+		// console.log("getAllDeviceData - res = ", res);
 		return res;
 	  })
 	  .catch(e => {
@@ -53,50 +55,67 @@ exports.getAllDeviceData = async (id) => {
 
 
 }
-const get_socketid_by_customid = (deviceID) =>{
-	let found = false;
-	Object.keys(currentConnectedClients).forEach(clientID => {
-		if(currentConnectedClients[clientID].customId === deviceID){
-			found = clientID;
-			return;
-		}
-	});
-	return found;
-}
+// const get_socketid_by_customid = (deviceID) =>{
+// 	console.log("-I- get_socketid_by_customid -- start")
+// 	let found = false;
+// 	if (!currentConnectedClients) {
+// 		throw("-E- no currentConnectedClients variable");
+// 	}
+// 	console.log("currentConnectedClients:",currentConnectedClients);
+// 	Object.keys(currentConnectedClients).forEach(clientID => {
+// 		console.log("-D- currentConnectedClients[clientID].customId = ",currentConnectedClients[clientID].customId);
+// 		if(currentConnectedClients[clientID].customId === deviceID){
+// 			found = clientID;
+// 			return;
+// 		}
+// 	});
+// 	console.log("-I- get_so cketid_by_customid -- end ", found );
+// 	return found;
+// }
 
 exports.change_method = async (bowlID, deviceID) => {
-	console.log("change_method");
+	console.log("-I- change_method -- start");
 	console.log("bowlID = ",bowlID);
 	console.log("deviceID = ",deviceID);
+	let socketID;
 
-	// const socketID = get_socketid_by_customid(deviceID);
-	// if (!socketID) {
-	// 	return false;
-	// }
 	try{
-		let bowl =await  Bowl.findOneAndUpdate({bowlID:bowlID, method: "automatically"},{method: "manually"});
-		console.log("bowl = ",bowl);
+		socketID = get_socketid_by_customid(deviceID);
+		if (!socketID) {
+			return false;
+		}
+	} catch (err) {
+		console.warn(err);
+		throw("-E- problem with socket");
+	}
+	console.log("-I- got socket id");
+	try{
+		let bowl =await  Bowl.findOneAndUpdate({bowlID:bowlID, method: "automatically"},{method: "manually"},{new:true});
+		console.log("-D- 11111 bowl = ",bowl);
 
 		if (!bowl){
-			console.log("method = manually")
+			console.log("-D- bowl null method = manually")
 			//manual
-			bowl = await  Bowl.findOneAndUpdate({bowlID:bowlID, method: "manually"},{method: "automatically"});
+			bowl = await  Bowl.findOneAndUpdate({bowlID:bowlID, method: "manually"},{method: "automatically"},{new:true});
 			if (!bowl) {
 				 throw("-ERROR- Couldn't find bowl");
 			}
-			// clearTimeout(currentConnectedClients[socketID].timeout);
+			clear_timeout(socketID);
 			return bowl;
 		} 
-		console.log("method = automatically")
+		console.log("-D- changed to man method = automatically")
+		set_method_timer(socketID,bowlID);
 		// currentConnectedClients[socketID].timeout = setTimeout( () => {
 		// console.log("setTimeout for ", socketID);
 		// bowl["method"] = "automatically";
-		// io.to(socketID).emit("bowl_to_auto", 
-		// 	{
-		// 		bowlID: bowlID,
-		// 		message: `Bowl is back to automatically method`
-		// 	});
+		// send_message_to_device("bowl_to_auto",socketID,bowlID,`Bowl is back to automatically method`)
+		// // io.to(socketID).emit("bowl_to_auto", 
+		// // 	{
+		// // 		bowlID: bowlID,
+		// // 		message: `Bowl is back to automatically method`
+		// // 	});
 		// },5000);
+		return bowl;
 	} catch (err) {
 		console.log(err);
 		return false;

@@ -2,7 +2,7 @@ const Cat = require('./../models/catModel.js');
 const Bowl = require('./../models/bowlModel.js');
 const Device = require('./../models/deviceModel.js');
 
-const handleVerifyBowl = (database) => async (req,res) => {
+const handleVerifyBowl = () => async (req,res) => {
 	const BreakException= {};
 	const { bowlID, key} = req.body;
 
