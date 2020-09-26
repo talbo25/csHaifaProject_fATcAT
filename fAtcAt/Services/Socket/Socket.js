@@ -1,4 +1,5 @@
 import io from "socket.io-client";
+const { SERVER_ADDRESS } = require("./../constants");
 
 // socket io configurations
-export const socket = io("http://10.0.3.2:3000");
+export const socket = io(SERVER_ADDRESS);

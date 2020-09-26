@@ -67,7 +67,7 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
               uri: `https://robohash.org/${name}?size=100x100&set=set3`,
             }}
             style={{
-              flex: 3,
+              // flex: 3,
               width: 30,
               height: 30,
               position: "absolute",
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   imageSize: {
-    flex: 3,
+    // flex: 3,
     width: 30,
     height: 30,
   },
