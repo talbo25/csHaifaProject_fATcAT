@@ -3,14 +3,18 @@ import PetEntry from "../Entries/PetEntry/PetEntry";
 import BowlEntry from "../Entries/BowlEntry/BowlEntry";
 import { StyleSheet, Text, View } from "react-native";
 
-const EntriesList = ({ head, entries, uniqueId }) => {
+const EntriesList = ({ head, entries, uniqueId, remove_object }) => {
   switch (head) {
     case "Cats":
       return (
         <View style={styles.EntryContainer}>
           {entries.map((cat, i) => {
             return (
-              <PetEntry cat={cat} change_edit_target={change_edit_target} />
+              <PetEntry
+                cat={cat}
+                change_edit_target={change_edit_target}
+                remove_object={remove_object}
+              />
             );
           })}
         </View>
@@ -24,6 +28,7 @@ const EntriesList = ({ head, entries, uniqueId }) => {
               <BowlEntry
                 bowl={bowl}
                 change_edit_target={change_edit_target}
+                remove_object={remove_object}
                 uniqueId={uniqueId}
               />
             );

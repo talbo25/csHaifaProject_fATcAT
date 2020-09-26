@@ -39,7 +39,7 @@ const Field = ({ keyna, field, value, onChangeValue }) => {
     let radioButtons = [];
     let first = "";
     field["options"].map((option) => {
-      console.log("-D- option = ", option);
+      // console.log("-D- option = ", option);
       if (first === "") {
         first = option;
       }
@@ -130,9 +130,7 @@ const Field = ({ keyna, field, value, onChangeValue }) => {
     );
   }
   if (field["type"] === "multipleSelect") {
-    console.log("MISHMASH ", value);
     const [selectedItems, setItems] = useState(value);
-    console.log("-D- GAZU! ", field["options"]);
     const items = field["options"];
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -143,8 +141,6 @@ const Field = ({ keyna, field, value, onChangeValue }) => {
             uniqueKey="id"
             onSelectedItemsChange={(nsl) => {
               setItems(nsl);
-              console.log("-items = ", items);
-              console.log("-nsl = ", nsl);
               onChangeValue(keyna, nsl);
             }}
             selectedItems={selectedItems}

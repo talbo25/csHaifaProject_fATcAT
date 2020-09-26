@@ -8,6 +8,7 @@ import NewBowl from "./Pages/NewBowl/NewBowl";
 import LogsPage from "./Pages/LogsPage/LogsPage";
 import DeviceInfo from "react-native-device-info";
 import { socket } from "./Services/Socket/Socket";
+const { SERVER_ADDRESS } = require("./Services/constants");
 
 const initState = () => {
   const state = {
@@ -29,11 +30,11 @@ const App = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: uniqueId,
+          deviceID: uniqueId,
         }),
       };
 
-      fetch("http://10.0.3.2:3000/device_data", requestOptions)
+      fetch(`${SERVER_ADDRESS}/device_data`, requestOptions)
         .then((response) => response.json())
         .then((data) => {
           if (data["cats"]) setDeviceShit(data);
@@ -73,7 +74,35 @@ const App = () => {
         currentDeviceID: uniqueId,
       }),
     };
-    fetch(`http://10.0.3.2:3000/add_new_object/${objectType}`, requestOptions)
+    fetch(`${SERVER_ADDRESS}/add_new_object/${objectType}`, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        setDeviceShit(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+
+    setState(initState);
+    return true;
+  };
+
+  remove_object = (objectType, objectID) => {
+    console.log("-D- remove_object");
+    console.log("-D- objectType ", objectType);
+    console.log("-D- objectID ", objectID);
+
+    const uniqueId = DeviceInfo.getUniqueId();
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        objectID: objectID,
+        deviceID: uniqueId,
+      }),
+    };
+    fetch(`${SERVER_ADDRESS}/remove_object/${objectType}`, requestOptions)
       .then((response) => response.json())
       .then((data) => {
         setDeviceShit(data);
@@ -88,6 +117,8 @@ const App = () => {
   };
 
   change_edit_target = (target, targetType) => {
+    console.log("change_edit_target - start");
+    console.log("target = ", target);
     setState({ ...state, ["editTarget"]: target });
     state["editTarget"] = target;
     switch (targetType) {
@@ -113,6 +144,7 @@ const App = () => {
             change_page={change_page}
             change_edit_target={change_edit_target}
             uniqueId={uniqueId}
+            remove_object={remove_object}
           />
         ) : state["currentPage"] === "cat_form" ? (
           <CatForm

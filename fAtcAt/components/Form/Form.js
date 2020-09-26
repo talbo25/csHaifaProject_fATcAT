@@ -18,7 +18,7 @@ const getInitialState = (fieldKeys) => {
   fieldKeys.forEach((key) => {
     state[key] = "";
   });
-  console.log("-D- getInitialState target end ", state);
+  // console.log("-D- getInitialState target end ", state);
 
   return state;
 };
@@ -42,6 +42,8 @@ const getInitialStateAndValues = (fields, editTarget) => {
       state[key] = "";
     }
   });
+  if ("_id" in editTarget) state["id"] = editTarget._id;
+  if ("bowlID" in editTarget) state["bowlID"] = editTarget.bowlID;
   return state;
 };
 
@@ -54,7 +56,11 @@ const Form = ({
   editTarget,
 }) => {
   console.log("-D- Form ");
+  console.log("-D- editTarget =", editTarget);
+  console.log("-D- editTarget =", editTarget._id);
+
   const fieldKeys = Object.keys(fields);
+  console.log("-D- fieldKeys =", fieldKeys);
 
   const [values, setValues] = useState(
     getInitialStateAndValues(fields, editTarget)
@@ -82,8 +88,8 @@ const Form = ({
       return setValidationErrors(errors);
     }
     // console.log("-D- before ", values);
-    if (objectType !== "preNewBowl")
-      values["id"] = "id" in editTarget ? editTarget["id"] : "-1";
+    // if (objectType !== "preNewBowl")
+    //   values["id"] = "id" in editTarget ? editTarget["id"] : "-1";
 
     try {
       // console.log("-D- after ", values);

@@ -43,7 +43,7 @@ const CatForm = ({ bowls, on_button_submit, editTarget }) => {
             label: "Bowl",
             type: "picker",
             options: bowls.map((bowl) => {
-              return { value: bowl.id, label: bowl.name };
+              return { value: bowl.bowlID, label: bowl.name };
             }),
           },
           feedingHours: {

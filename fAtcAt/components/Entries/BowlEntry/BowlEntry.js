@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { socket } from "./../../../Services/Socket/Socket";
+const { SERVER_ADDRESS } = require("./../../../Services/constants");
 
 import {
   StyleSheet,
@@ -11,12 +12,12 @@ import {
   Alert,
 } from "react-native";
 
-const BowlEntry = ({ bowl, change_edit_target, uniqueId }) => {
-  console.log("BowlEntry ", bowl);
-  const { name } = bowl;
+const BowlEntry = ({ bowl, change_edit_target, remove_object, uniqueId }) => {
+  // console.log("BowlEntry ", bowl);
+  const { bowlID, name } = bowl;
   const [bowlMethod, setMethod] = useState({ method: bowl["method"] });
 
-  socket.on("bowl_to_auto", (data) => {
+  socket.once("bowl_to_auto", (data) => {
     if (bowlMethod["method"] != "automatically") {
       Alert.alert(data.message);
       setMethod({ method: "automatically" });
@@ -35,24 +36,22 @@ const BowlEntry = ({ bowl, change_edit_target, uniqueId }) => {
       }),
     };
 
-    return fetch(
-      `http://evening-woodland-16568.herokuapp.com/gods_intervention`,
-      requestOptions
-    )
+    return fetch(`${SERVER_ADDRESS}/change_method`, requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        if (data["id"]) {
+        console.log("data = ", data);
+        if (data["bowlID"]) {
           Alert.alert("DONE!");
           setMethod({ method: data["method"] });
         }
         return data;
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.warn(err));
   };
 
   return (
     <View style={styles.container}>
-      <TouchableHighlight onPress={() => change_bowl_state(id)}>
+      <TouchableHighlight onPress={() => change_bowl_state(bowlID)}>
         <React.Fragment>
           <Image
             source={{
@@ -68,6 +67,7 @@ const BowlEntry = ({ bowl, change_edit_target, uniqueId }) => {
               uri: `https://robohash.org/${name}?size=100x100&set=set3`,
             }}
             style={{
+              flex: 3,
               width: 30,
               height: 30,
               position: "absolute",
@@ -76,12 +76,19 @@ const BowlEntry = ({ bowl, change_edit_target, uniqueId }) => {
           />
         </React.Fragment>
       </TouchableHighlight>
-      <Text>{name}</Text>
+      <Text style={{ flex: 6, textAlign: "center" }}>{name}</Text>
       <Button
         style={styles.ButtonContainer}
         onPress={() => change_edit_target(bowl, "bowl")}
         title="edit"
         color="#2196F3"
+        accessibilityLabel="BOO BOO GA GA"
+      />
+      <Button
+        style={styles.ButtonContainer2}
+        onPress={() => remove_object("bowl", bowl.bowlID)}
+        title="X"
+        color="red"
         accessibilityLabel="BOO BOO GA GA"
       />
     </View>
@@ -97,23 +104,30 @@ const styles = StyleSheet.create({
     justifyContent: "space-between", // center, space-around
     padding: 2,
     margin: 3,
-    flex: 3,
+    flex: 12,
   },
   ButtonContainer: {
-    flex: 1,
+    flex: 2,
     width: 20,
     justifyContent: "center",
   },
+  ButtonContainer2: {
+    flex: 1,
+    // width: 10,
+    justifyContent: "center",
+    padding: 5,
+  },
   imageSize: {
+    flex: 3,
     width: 30,
     height: 30,
   },
   manual_gray: {
     tintColor: "gray",
   },
-  manual_image: {
+  normalImage: {
     position: "absolute",
-    opacity: 0.3,
+    opacity: 1,
   },
 });
 export default BowlEntry;

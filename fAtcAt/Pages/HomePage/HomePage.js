@@ -8,6 +8,7 @@ const HomePage = ({
   change_page,
   change_edit_target,
   uniqueId,
+  remove_object,
 }) => {
   return (
     <View style={styles.container}>
@@ -16,6 +17,7 @@ const HomePage = ({
         entries={cats}
         change_page={change_page}
         change_edit_target={change_edit_target}
+        remove_object={remove_object}
         uniqueId={uniqueId}
       />
       <ListBox
@@ -23,6 +25,7 @@ const HomePage = ({
         entries={bowls}
         change_page={change_page}
         change_edit_target={change_edit_target}
+        remove_object={remove_object}
         uniqueId={uniqueId}
       />
     </View>

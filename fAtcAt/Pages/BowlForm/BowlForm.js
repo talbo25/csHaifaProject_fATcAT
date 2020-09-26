@@ -13,6 +13,7 @@ import {
 const BowlForm = ({ cats, on_button_submit, editTarget }) => {
   console.log("-D- NewBowl editTarget = ", editTarget);
   const afterSubmitMessage = (result) => {
+    // NEED TO CHANGE!!!!!!!!!!!!!
     if (result) {
       Alert.alert("Yipi Ya");
     } else {

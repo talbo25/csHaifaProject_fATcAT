@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import Log from "./Log";
 import { StyleSheet, Text, View } from "react-native";
 
 const Logs = ({ data }) => {
   console.log("LOGS ", data);
+  const [logs, setLogs] = useState(data);
+
+  socket.once("refresh_logs", (data) => {
+    setLogs(data.message);
+  });
+
   return (
     <View style={styles.EntryContainer}>
-      {data.map((log, i) => {
+      {logs.map((log, i) => {
         return <Log log={log} />;
       })}
     </View>

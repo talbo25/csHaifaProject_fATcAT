@@ -5,6 +5,7 @@ import {
   validateContent,
   validateLength,
 } from "../../components/Form/validation";
+const { SERVER_ADDRESS } = require("./../../Services/constants");
 
 // verify if user's bowl exist on server
 const find_bowl_button = (objectType, objectData) => {
@@ -16,18 +17,16 @@ const find_bowl_button = (objectType, objectData) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      id: id,
+      bowlID: id,
       key: key,
     }),
   };
 
-  return fetch(
-    `https://evening-woodland-16568.herokuapp.com/verify_bowl`,
-    requestOptions
-  )
+  return fetch(`${SERVER_ADDRESS}/verify_bowl`, requestOptions)
     .then((response) => response.json())
     .then((data) => {
-      if (data["id"]) {
+      console.log("data = ", data);
+      if (data["bowlID"]) {
         change_edit_target(data, "bowl");
         data = true;
       }
