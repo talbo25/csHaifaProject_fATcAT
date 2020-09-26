@@ -6,10 +6,6 @@ const Logs = ({ data }) => {
   console.log("LOGS ", data);
   const [logs, setLogs] = useState(data);
 
-  socket.once("refresh_logs", (data) => {
-    setLogs(data.message);
-  });
-
   return (
     <View style={styles.EntryContainer}>
       {logs.map((log, i) => {

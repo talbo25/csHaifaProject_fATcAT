@@ -14,14 +14,14 @@ const PetEntry = ({ cat, change_edit_target, remove_object }) => {
         style={styles.ButtonContainer}
         onPress={() => change_edit_target(cat, "cat")}
         title="edit"
-        color="#2196F3"
+        color="#6998BC"
         accessibilityLabel="BOO BOO GA GA"
       />
       <Button
         style={styles.ButtonContainer2}
         onPress={() => remove_object("cat", cat["_id"])}
         title="X"
-        color="red"
+        color="#AA5039"
         accessibilityLabel="BOO BOO GA GA"
       />
     </View>

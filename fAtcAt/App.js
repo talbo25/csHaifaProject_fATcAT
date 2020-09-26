@@ -25,18 +25,22 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const state = {};
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
           deviceID: uniqueId,
         }),
       };
+      console.log("-D- reqOpt = ", requestOptions);
 
       fetch(`${SERVER_ADDRESS}/device_data`, requestOptions)
-        .then((response) => response.json())
+        .then((response) => {
+          console.log("response= ", response);
+          return response.json();
+        })
         .then((data) => {
+          console.log("data = ", data);
           if (data["cats"]) setDeviceShit(data);
         })
         .catch((err) => {

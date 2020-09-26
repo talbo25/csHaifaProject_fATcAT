@@ -12,7 +12,7 @@ import {
   Alert,
 } from "react-native";
 
-const BowlEntry = ({ bowl, change_edit_target, remove_object, uniqueId }) => {
+const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
   // console.log("BowlEntry ", bowl);
   const { bowlID, name } = bowl;
   const [bowlMethod, setMethod] = useState({ method: bowl["method"] });
@@ -32,7 +32,7 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, uniqueId }) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         bowlID: bowlID,
-        deviceID: uniqueId,
+        deviceID: deviceID,
       }),
     };
 
@@ -81,14 +81,14 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, uniqueId }) => {
         style={styles.ButtonContainer}
         onPress={() => change_edit_target(bowl, "bowl")}
         title="edit"
-        color="#2196F3"
+        color="#6998BC"
         accessibilityLabel="BOO BOO GA GA"
       />
       <Button
         style={styles.ButtonContainer2}
         onPress={() => remove_object("bowl", bowl.bowlID)}
         title="X"
-        color="red"
+        color="#AA5039"
         accessibilityLabel="BOO BOO GA GA"
       />
     </View>

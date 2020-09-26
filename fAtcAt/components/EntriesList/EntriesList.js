@@ -14,6 +14,7 @@ const EntriesList = ({ head, entries, uniqueId, remove_object }) => {
                 cat={cat}
                 change_edit_target={change_edit_target}
                 remove_object={remove_object}
+                key={i}
               />
             );
           })}
@@ -29,7 +30,8 @@ const EntriesList = ({ head, entries, uniqueId, remove_object }) => {
                 bowl={bowl}
                 change_edit_target={change_edit_target}
                 remove_object={remove_object}
-                uniqueId={uniqueId}
+                deviceID={uniqueId}
+                key={i}
               />
             );
           })}
