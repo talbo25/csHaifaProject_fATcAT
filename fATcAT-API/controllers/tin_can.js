@@ -9,6 +9,14 @@ const handleTinCan = () => async (req,res) => {
 		return res.status(400).json("-E- WHO ARE YOU?");
 	}
 	const { Major_Tom } = req.body;
+
+	try {
+		if ("logs" in Major_Tom){
+			utils.add_logs_to_device(Major_Tom["id"],Major_Tom["logs"]);
+		}
+	} catch (err) {
+		console.warn(err);
+	}
 	try {
 		const bowlData = await Bowl.findOne(
 			{

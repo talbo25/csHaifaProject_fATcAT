@@ -17,6 +17,7 @@ const check_weight = require('./controllers/check_weight.js');
 const change_method = require('./controllers/change_method.js');
 const tin_can = require('./controllers/tin_can.js');
 const logs_request = require('./controllers/logs_request.js');
+const remove_object = require('./controllers/remove_object.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -72,6 +73,8 @@ app.post('/check_weight', check_weight.handleCheckWeight());
 app.post('/change_method', change_method.handleChangeMethod());
 app.post('/tin_can', tin_can.handleTinCan());
 app.post('/logs', logs_request.handleLogs());
+app.post('/remove_object/bowl', remove_object.handleRemoveBowl());
+app.post('/remove_object/cat', remove_object.handleRemoveCat());
 
 const port = process.env.PORT || 3000;
 server.listen(port, ()=> {

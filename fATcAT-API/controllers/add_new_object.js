@@ -7,28 +7,28 @@
 	console.log("handleNewBowl");
 	const BreakException= {};
 	const { objectValues, currentDeviceID} = req.body;
+	console.log("objectValues = ",objectValues);
 
 	let found = false;
 	try {
+
 		// factory bowls
-		await Bowl.updateOne({bowlID: objectValues["id"]},{activeHours:objectValues["activeHours"]});
+		await Bowl.updateOne({bowlID: objectValues["bowlID"]},{activeHours:objectValues["activeHours"]});
 
 		// update if bowl in device
-		const dev = await Device.updateOne({ deviceID:currentDeviceID, "bowls.bowlID": objectValues["id"] }, {
+		await Device.updateOne({ deviceID:currentDeviceID,"bowls.bowlID": objectValues["bowlID"] }, {
 		    $set: {
 		        "bowls.$.name": objectValues["name"],
 		    }
 		});
-		// console.log("dev = ",dev);
-
 		//add if not exist
-		const dev2 = await Device.updateOne(
+		await Device.updateOne(
 		{
 				deviceID:currentDeviceID, 
 				bowls: {
 					"$not": {
 						"$elemMatch": {
-							bowlID : objectValues["id"]
+							bowlID : objectValues["bowlID"]
 						}					
 					}
 				}
@@ -36,7 +36,7 @@
 				$addToSet: {
 					bowls:
 					{
-						"bowlID":objectValues["id"],
+						"bowlID":objectValues["bowlID"],
 						"name": objectValues["name"]
 					}
 				}
@@ -58,12 +58,14 @@ const handleNewCat = () => async (req,res) => {
 	console.log("-D-add_new_object cat")
 	const BreakException= {};
 	const { objectValues, currentDeviceID} = req.body;
+	console.log("objectValues = ",objectValues);
+
 	if (!("id" in objectValues)) {
 		//new cat
 		console.log("-I- new cat");
 		//add cat to database
 		const newCat = new Cat(objectValues);
-		newCat.save()
+		await newCat.save()
 		.then( doc => {
 			console.log(doc);
 		})

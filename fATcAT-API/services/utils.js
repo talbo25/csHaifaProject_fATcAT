@@ -3,7 +3,7 @@ const Bowl = require('./../models/bowlModel.js');
 const Device = require('./../models/deviceModel.js');
 // const io = require('./../index.js').io;
 // const currentConnectedClients = require('./../index.js').currentConnectedClients;
-const {send_message_to_device, get_socketid_by_customid,set_method_timer,clear_timeout} = require('./sockets.js');
+const {send_message_to_device, get_socketid_by_customid,set_method_timer,clear_timeout,refresh_logs} = require('./sockets.js');
 
 exports.getAllDeviceData = async (id) => {
 	let res = {};
@@ -55,23 +55,12 @@ exports.getAllDeviceData = async (id) => {
 
 
 }
-// const get_socketid_by_customid = (deviceID) =>{
-// 	console.log("-I- get_socketid_by_customid -- start")
-// 	let found = false;
-// 	if (!currentConnectedClients) {
-// 		throw("-E- no currentConnectedClients variable");
-// 	}
-// 	console.log("currentConnectedClients:",currentConnectedClients);
-// 	Object.keys(currentConnectedClients).forEach(clientID => {
-// 		console.log("-D- currentConnectedClients[clientID].customId = ",currentConnectedClients[clientID].customId);
-// 		if(currentConnectedClients[clientID].customId === deviceID){
-// 			found = clientID;
-// 			return;
-// 		}
-// 	});
-// 	console.log("-I- get_so cketid_by_customid -- end ", found );
-// 	return found;
-// }
+
+exports.add_logs_to_device = async (bowlID, newLogs) => {
+	const myDevices = Device.update({"bowls.bowlID":bowlID},{ $addToSet: { logs: newLogs}},{new:true});
+
+	refresh_logs(myDevices)
+}
 
 exports.change_method = async (bowlID, deviceID) => {
 	console.log("-I- change_method -- start");
