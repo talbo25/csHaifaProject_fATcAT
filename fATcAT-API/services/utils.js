@@ -68,15 +68,15 @@ exports.change_method = async (bowlID, deviceID) => {
 	console.log("deviceID = ",deviceID);
 	let socketID;
 
-	// try{
-	// 	socketID = get_socketid_by_customid(deviceID);
-	// 	if (!socketID) {
-	// 		return false;
-	// 	}
-	// } catch (err) {
-	// 	console.warn(err);
-	// 	throw("-E- problem with socket");
-	// }
+	try{
+		socketID = get_socketid_by_customid(deviceID);
+		if (!socketID) {
+			return false;
+		}
+	} catch (err) {
+		console.warn(err);
+		throw("-E- problem with socket");
+	}
 	console.log("-I- got socket id");
 	try{
 		let bowl =await  Bowl.findOneAndUpdate({bowlID:bowlID, method: "automatically"},{method: "manually"},{new:true});
@@ -89,11 +89,11 @@ exports.change_method = async (bowlID, deviceID) => {
 			if (!bowl) {
 				 throw("-ERROR- Couldn't find bowl");
 			}
-			// clear_timeout(socketID);
+			clear_timeout(socketID);
 			return bowl;
 		} 
 		console.log("-D- changed to man method = automatically")
-		// set_method_timer(socketID,bowlID);
+		set_method_timer(socketID,bowlID);
 		// currentConnectedClients[socketID].timeout = setTimeout( () => {
 		// console.log("setTimeout for ", socketID);
 		// bowl["method"] = "automatically";
