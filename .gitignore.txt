@@ -1,1 +1,1 @@
-./fATcAT-API/node_modules/*
+fATcAT-API/node_modules/
