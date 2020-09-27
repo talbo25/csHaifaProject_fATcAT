@@ -18,6 +18,7 @@ const change_method = require('./controllers/change_method.js');
 const tin_can = require('./controllers/tin_can.js');
 const logs_request = require('./controllers/logs_request.js');
 const remove_object = require('./controllers/remove_object.js');
+const ccc = require('./controllers/get_currentConnectedClients.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -62,7 +63,7 @@ mongoose.connect(DB, {
 	useFindAndModify: false,
 }).then(() =>console.log("DB connected successfully!"));
 
-app.get('/currentConnectedClients', (req, res) =>{res.send(currentConnectedClients)})
+app.get('/currentConnectedClients', ccc.handleCurrentConnectedClients());
 app.get('/cats', get_objects.handleGetAllCats());
 app.get('/bowls', get_objects.handleGetAllBowls());
 app.post('/device_data', device_data.handleDeviceData());

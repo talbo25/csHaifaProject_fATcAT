@@ -79,3 +79,8 @@ module.exports.refresh_logs = (deviceIDlogs) => {
   })
 
 }
+
+module.exports.get_currentConnectedClients = () => {
+  console.log("-I- get_currentConnectedClients");
+  return currentConnectedClients;
+}
