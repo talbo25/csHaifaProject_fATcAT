@@ -32,7 +32,7 @@ const App = () => {
           deviceID: uniqueId,
         }),
       };
-      console.log("-D- reqOpt = ", requestOptions);
+      // console.log("-D- reqOpt = ", requestOptions);
 
       fetch(`${SERVER_ADDRESS}/device_data`, requestOptions)
         .then((response) => {
@@ -60,6 +60,10 @@ const App = () => {
   const { cats, bowls } = deviceShit;
   change_page = (newPage) => {
     // console.log("change_page ", newPage);
+    if (newPage === "cat_form" && bowls.length === 0) {
+      Alert.alert("Error", "Must has at least one bowl before adding cats");
+      return;
+    }
     setState({ ...state, ["currentPage"]: newPage });
   };
 

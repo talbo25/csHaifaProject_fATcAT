@@ -63,7 +63,7 @@ module.exports.set_method_timer =  (socketID,bowlID) => {
     console.log("setTimeout for ", socketID);
     await  Bowl.findOneAndUpdate({bowlID:bowlID},{method: "automatically"});
     module.exports.send_message_to_device("bowl_to_auto",socketID,bowlID,`Bowl is back to automatically method`)
-    },5000);
+    },30*1000);
   }
 
   module.exports.clear_timeout = (socketID) => {
@@ -71,9 +71,10 @@ module.exports.set_method_timer =  (socketID,bowlID) => {
   }
 
 
-module.exports.refresh_logs = (deviceIDlogs) => {
+module.exports.refresh_logs = (devices) => {
+  console.log("-I- refresh_logs -- start");
   let socketID;
-  deviceIDlogs.forEach( device => {
+  devices.forEach( device => {
     socketID = module.exports.get_socketid_by_customid(device.deviceID);
     module.exports.send_message_to_device("refresh_logs",socketID,device.deviceID,device.logs) ;
   })

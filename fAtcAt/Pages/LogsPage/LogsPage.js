@@ -2,31 +2,32 @@ import React, { useState, useEffect } from "react";
 import Logs from "../../components/Logs/Logs";
 import { StyleSheet, Text, View, ScrollView, SafeAreaView } from "react-native";
 import { socket } from "./../../Services/Socket/Socket";
+const { SERVER_ADDRESS } = require("./../../Services/constants");
 
-const get_logs = (deviceID) => {
-  console.log("get_logs ", deviceID);
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      deviceID: deviceID,
-    }),
-  };
+// const get_logs = (deviceID) => {
+//   console.log("get_logs ", deviceID);
+//   const requestOptions = {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({
+//       deviceID: deviceID,
+//     }),
+//   };
 
-  return fetch(`http://10.0.3.2:3000/logs`, requestOptions)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data["logs"]) {
-        console.log("-I- fetch logs - ", data["size"]);
-        console.log(data["logs"]);
-        return data["logs"];
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      return [];
-    });
-};
+//   return fetch(`${SERVER_ADDRESS}/logs`, requestOptions)
+//     .then((response) => response.json())
+//     .then((data) => {
+//       if (data["logs"]) {
+//         console.log("-I- fetch logs - ", data["size"]);
+//         console.log(data["logs"]);
+//         return data["logs"];
+//       }
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       return [];
+//     });
+// };
 
 const LogsPage = ({ uniqueId }) => {
   console.log("LogsBox");
@@ -43,7 +44,7 @@ const LogsPage = ({ uniqueId }) => {
         }),
       };
 
-      return fetch(`http://10.0.3.2:3000/logs`, requestOptions)
+      return fetch(`${SERVER_ADDRESS}/logs`, requestOptions)
         .then((response) => response.json())
         .then((data) => {
           if (data["logs"]) {

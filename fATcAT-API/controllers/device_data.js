@@ -2,6 +2,7 @@ const utils = require('./../services/utils.js');
 const Device = require('./../models/deviceModel.js');
 
 const handleDeviceData = () => async (req,res) => {
+	console.log("-I- handleDeviceData -- start");
 	const { deviceID } = req.body;
 	let found = await utils.getAllDeviceData(deviceID);
 	if (!found) {

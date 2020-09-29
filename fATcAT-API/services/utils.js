@@ -56,10 +56,50 @@ exports.getAllDeviceData = async (id) => {
 
 }
 
-exports.add_logs_to_device = async (bowlID, newLogs) => {
-	const myDevices = Device.update({"bowls.bowlID":bowlID},{ $addToSet: { logs: newLogs}},{new:true});
+const get_sting_timestamp = () => {
+	const date_ob = new Date();
+	const date = ("0" + date_ob.getDate()).slice(-2);
+	const month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+	const year = date_ob.getFullYear();
+	const hours = date_ob.getHours();
+	const minutes = date_ob.getMinutes();
+	const seconds = date_ob.getSeconds();
+	return (year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds);
+} 
 
-	refresh_logs(myDevices)
+exports.add_logs_to_device = async (bowlID, newLogInfo) => {
+	console.log("-I- add_logs_to_device -- start");
+	const newLogDate = get_sting_timestamp();
+	const myDevices = await Device.find({"bowls.bowlID":bowlID});
+	console.log("-D- myDevices = ",myDevices);
+
+	if(myDevices.ok === 0) {
+		console.warn("-W- No devices connect to bowl ",bowlID);
+		return;
+	}
+
+	const get_bowl_nickname = (bowls, targetID) => {
+		let bowlName = "Unknown";
+		bowls.forEach(bowl => {
+			if (bowl.bowlID === targetID) {
+				bowlName= bowl.name;
+			}
+		})
+		return bowlName;
+	}
+
+	myDevices.forEach(async device => {
+		const bowlNickname = await get_bowl_nickname(device.bowls,bowlID);
+		console.log("-I- bowlNickname = ",bowlNickname);
+		const newLog = {
+			date : newLogDate,
+			info : bowlNickname + " - " + newLogInfo,
+		}
+		console.log("-I- newLog = ",newLog);
+		const updateDevicesStatus = await Device.findByIdAndUpdate(device["_id"],{ $addToSet: { logs: newLog}},{new:true});
+	})
+
+	// refresh_logs(myDevices)
 }
 
 exports.change_method = async (bowlID, deviceID) => {
