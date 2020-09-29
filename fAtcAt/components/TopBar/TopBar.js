@@ -16,9 +16,6 @@ const TopBar = () => {
           Home
         </Text>
       </Icon.Button>
-
-      <Text>fATcAT</Text>
-
       <Icon.Button
         name="newspaper-o"
         size={15}

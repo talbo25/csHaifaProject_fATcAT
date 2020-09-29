@@ -56,11 +56,8 @@ const Form = ({
   editTarget,
 }) => {
   console.log("-D- Form ");
-  console.log("-D- editTarget =", editTarget);
-  console.log("-D- editTarget =", editTarget._id);
 
   const fieldKeys = Object.keys(fields);
-  console.log("-D- fieldKeys =", fieldKeys);
 
   const [values, setValues] = useState(
     getInitialStateAndValues(fields, editTarget)
@@ -87,16 +84,11 @@ const Form = ({
       console.log(errors);
       return setValidationErrors(errors);
     }
-    // console.log("-D- before ", values);
-    // if (objectType !== "preNewBowl")
-    //   values["id"] = "id" in editTarget ? editTarget["id"] : "-1";
 
     try {
       // console.log("-D- after ", values);
       const result = await action(objectType, values);
       await afterSubmit(result);
-
-      // navigate to Home
     } catch (e) {
       setErrorMessage(e.message);
     }
@@ -104,7 +96,6 @@ const Form = ({
 
   return (
     <View>
-      {/* <SafeAreaView style={styles.inputContainer}> */}
       <ScrollView>
         <View>
           {fieldKeys.map((key) => {
@@ -129,7 +120,6 @@ const Form = ({
       <Button title={buttonText} onPress={submit}>
         <Text>{buttonText}</Text>
       </Button>
-      {/* </SafeAreaView> */}
     </View>
   );
 };

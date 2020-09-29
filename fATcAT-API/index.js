@@ -19,6 +19,7 @@ const tin_can = require('./controllers/tin_can.js');
 const logs_request = require('./controllers/logs_request.js');
 const remove_object = require('./controllers/remove_object.js');
 const ccc = require('./controllers/get_currentConnectedClients.js');
+const current_weight = require('./controllers/get_current_weight.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -76,6 +77,7 @@ app.post('/tin_can', tin_can.handleTinCan());
 app.post('/logs', logs_request.handleLogs());
 app.post('/remove_object/bowl', remove_object.handleRemoveBowl());
 app.post('/remove_object/cat', remove_object.handleRemoveCat());
+app.post('/current_weight', current_weight.handleGetCurrentBowlWeight());
 
 const port = process.env.PORT || 3000;
 server.listen(port, ()=> {

@@ -3,7 +3,7 @@ const Bowl = require('./../models/bowlModel.js');
 const Device = require('./../models/deviceModel.js');
 // const io = require('./../index.js').io;
 // const currentConnectedClients = require('./../index.js').currentConnectedClients;
-const {send_message_to_device, get_socketid_by_customid,set_method_timer,clear_timeout,refresh_logs} = require('./sockets.js');
+const {send_message_to_device, get_socketid_by_customid,set_method_timer,clear_timeout,refresh_logs,get_current_bowl_weight} = require('./sockets.js');
 
 exports.getAllDeviceData = async (id) => {
 	let res = {};
@@ -110,4 +110,38 @@ exports.change_method = async (bowlID, deviceID) => {
 		return false;
 	}
 	
+}
+const delay = async (ms) =>{
+  return await new Promise(resolve => setTimeout(resolve,ms));
+}
+
+exports.get_weight = async (bowlID, deviceID) => {
+	console.log("-I- get_weight -- start");
+	console.log("bowlID = ",bowlID);
+	console.log("deviceID = ",deviceID);
+	let socketID =1;
+
+	// get bowl current weight
+
+	// // get bowl socket
+	// socketID = get_socketid_by_customid(bowlID);
+	// console.log("-D- socketID = ", socketID);
+	// if (!socketID) {
+	// 	throw("problem with finding socketID for bowl");
+	// }
+
+	// send request to bowl
+	// get value from bowl
+	let myWeight = false;
+	let chances = 3;
+
+	while (chances > 0 && !myWeight) {
+		console.log("-D- chances = ", chances);
+		console.log("-D- myWeight = ", myWeight);
+		myWeight = get_current_bowl_weight(socketID);
+		// myWeight = 3.3;
+		await delay(3*1000);
+		--chances;
+	}
+	return myWeight;
 }

@@ -84,3 +84,12 @@ module.exports.get_currentConnectedClients = () => {
   console.log("-I- get_currentConnectedClients");
   return currentConnectedClients;
 }
+
+module.exports.get_current_bowl_weight = (socketID) => {
+  if (!(socketID in currentConnectedClients) || !(currentWeight in currentConnectedClients[socketID]) || currentConnectedClients[socketID].currentWeight === null) {
+    return false;
+  }
+  const w = currentConnectedClients[socketID].currentWeight;
+  currentConnectedClients[socketID].currentWeight = null;
+  return w;
+}

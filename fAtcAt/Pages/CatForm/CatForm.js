@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "../../components/Form/Form";
 import { StyleSheet, View, Alert } from "react-native";
 import {
@@ -10,13 +10,52 @@ import {
   validateLength,
 } from "../../components/Form/validation";
 
-const CatForm = ({ bowls, on_button_submit, editTarget }) => {
+const CatForm = ({
+  bowls,
+  on_button_submit,
+  editTarget,
+  get_current_weight,
+}) => {
   const afterSubmitMessage = (result) => {
     if (result) {
       Alert.alert("New Cat! Yipi Ya");
     } else {
       Alert.alert("Oops... a problem");
     }
+  };
+
+  const get_weight = () => {
+    //function to make three option alert
+
+    Alert.alert(
+      //title
+      "Scale cat",
+      //body
+      "Choose bowl",
+      bowls.map((bowl) => {
+        return {
+          text: bowl.name,
+          onPress: async () => {
+            try {
+              const w = await get_current_weight(bowl.bowlID);
+              // console.log("-D- get_current_weight response ", w);
+              if (!w) {
+                throw "get_current_weight return false";
+              } else {
+                Alert.alert(bowl.name, `Current weight is ${w}`);
+              }
+            } catch (err) {
+              console.warn(err);
+              Alert.alert(
+                "SORRY =[",
+                "Couldn't get weight from bowl - " + bowl.name
+              );
+            }
+          },
+        };
+      }),
+      { cancelable: true }
+    );
   };
 
   return (
@@ -38,6 +77,12 @@ const CatForm = ({ bowls, on_button_submit, editTarget }) => {
             label: "Weight",
             type: "slider",
             options: [0.5, 21.3],
+          },
+          scale: {
+            type: "button",
+            options: () => {
+              get_weight();
+            },
           },
           bowlID: {
             label: "Bowl",

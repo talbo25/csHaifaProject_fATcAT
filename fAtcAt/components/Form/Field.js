@@ -7,14 +7,26 @@ import {
   Slider,
   Text,
   SafeAreaView,
+  Button,
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import MultiSelect from "react-native-multiple-select";
 
 const Field = ({ keyna, field, value, onChangeValue }) => {
-  // console.log("########################Field");
-  // console.log("field ", field);
-  // console.log("value ", value);
+  console.log("keyna = ", keyna);
+  console.log("field = ", field);
+  console.log("value = ", value);
+
+  if (field["type"] === "button") {
+    return (
+      <View style={styles.buttonStyle}>
+        <View style={{ width: "20%" }}>
+          <Button title={keyna} color="grey" onPress={field.options} />
+        </View>
+      </View>
+    );
+  }
   if (field["type"] === "text") {
     return (
       <TextInput
@@ -175,8 +187,11 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    alignItems: "center",
+
     padding: 5,
+  },
+  buttonStyle: {
+    alignItems: "center",
   },
 });
 

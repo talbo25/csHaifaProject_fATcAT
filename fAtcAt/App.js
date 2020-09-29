@@ -120,6 +120,30 @@ const App = () => {
     return true;
   };
 
+  get_current_weight = (bowlID) => {
+    console.log("-D- get_current_weight");
+    console.log("-D- bowlID ", bowlID);
+
+    const uniqueId = DeviceInfo.getUniqueId();
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        bowlID: bowlID,
+        deviceID: uniqueId,
+      }),
+    };
+    return fetch(`${SERVER_ADDRESS}/current_weight`, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+  };
+
   change_edit_target = (target, targetType) => {
     console.log("change_edit_target - start");
     console.log("target = ", target);
@@ -155,6 +179,7 @@ const App = () => {
             bowls={bowls}
             on_button_submit={on_button_submit}
             editTarget={state["editTarget"]}
+            get_current_weight={get_current_weight}
           />
         ) : state["currentPage"] === "bowl_form" ? (
           <BowlForm
