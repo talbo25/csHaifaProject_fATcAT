@@ -82,14 +82,13 @@ const handleNewLog = () => async (req,res) => {
 		return res.status(400).json("-E- Bad request : "+err);
 	}
 
-
 	try {
 		utils.add_logs_to_device(passport["id"],log);
 	} catch (err) {
 		console.warn(err);
 		return res.status(400).json(err);
 	}
-	return res.status(200).json(true);
+	return res.status(200).json(`-I- blabla`);
 }
 
 const handlCurrentWeight = () => async (req,res) => {

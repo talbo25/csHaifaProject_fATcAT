@@ -71,7 +71,7 @@ exports.add_logs_to_device = async (bowlID, newLogInfo) => {
 	console.log("-I- add_logs_to_device -- start");
 	const newLogDate = get_sting_timestamp();
 	const myDevices = await Device.find({"bowls.bowlID":bowlID});
-	// console.log("-D- myDevices = ",myDevices);
+	console.log("-D- myDevices = ",myDevices);
 
 	if(myDevices.ok === 0) {
 		throw("-W- No devices connect to bowl ",bowlID);
@@ -101,7 +101,6 @@ exports.add_logs_to_device = async (bowlID, newLogInfo) => {
 		}
 		const updateDevicesStatus = await Device.findByIdAndUpdate(device["_id"],{ $addToSet: { logs: newLog}},{new:true});
 	})
-
 	// refresh_logs(myDevices)
 }
 
