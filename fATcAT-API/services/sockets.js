@@ -32,6 +32,9 @@ module.exports.listen = (server) => {
 
 
 module.exports.send_message_to_device = (header,targetSocket,targetNick,message)  =>{
+  console.log("-I- send_message_to_device -- start");
+  console.log("-I- message = ",message);
+
   io.to(targetSocket).emit(header, 
       {
         target: targetNick,
@@ -76,7 +79,7 @@ module.exports.refresh_logs = (devices) => {
   let socketID;
   devices.forEach( device => {
     socketID = module.exports.get_socketid_by_customid(device.deviceID);
-    module.exports.send_message_to_device("refresh_logs",socketID,device.deviceID,device.logs) ;
+    module.exports.send_message_to_device("refresh_logs",socketID,device.deviceID,device.logs[-1]) ;
   })
 
 }

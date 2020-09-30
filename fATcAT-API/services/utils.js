@@ -71,11 +71,10 @@ exports.add_logs_to_device = async (bowlID, newLogInfo) => {
 	console.log("-I- add_logs_to_device -- start");
 	const newLogDate = get_sting_timestamp();
 	const myDevices = await Device.find({"bowls.bowlID":bowlID});
-	console.log("-D- myDevices = ",myDevices);
+	// console.log("-D- myDevices = ",myDevices);
 
 	if(myDevices.ok === 0) {
-		console.warn("-W- No devices connect to bowl ",bowlID);
-		return;
+		throw("-W- No devices connect to bowl ",bowlID);
 	}
 
 	const get_bowl_nickname = (bowls, targetID) => {
@@ -96,6 +95,10 @@ exports.add_logs_to_device = async (bowlID, newLogInfo) => {
 			info : bowlNickname + " - " + newLogInfo,
 		}
 		console.log("-I- newLog = ",newLog);
+		// if 20 logs - remoe oldest
+		if (device.logs.length >=20){
+			await Device.findByIdAndUpdate( device["_id"], { $pop: {logs: -1 } } )
+		}
 		const updateDevicesStatus = await Device.findByIdAndUpdate(device["_id"],{ $addToSet: { logs: newLog}},{new:true});
 	})
 

@@ -10,7 +10,7 @@ const handleLogs = () => async (req,res) => {
 
 		res.send({
 			size:reqLogs["logs"].length, 
-			logs: reqLogs.logs
+			logs: reqLogs.logs.reverse()
 		});
 
 	} catch (err) {

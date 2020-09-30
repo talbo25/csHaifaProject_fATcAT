@@ -87,6 +87,7 @@ const handleNewLog = () => async (req,res) => {
 		utils.add_logs_to_device(passport["id"],log);
 	} catch (err) {
 		console.warn(err);
+		return res.status(400).json(err);
 	}
 	return res.status(200).json(true);
 }
