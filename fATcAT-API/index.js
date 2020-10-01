@@ -1,6 +1,5 @@
 
 const dotenv = require('dotenv');
-// const database = require('./dummy_database2.js');
 const mongoose = require('mongoose');
 const express = require('express')
 const bodyParser = require('body-parser');
@@ -18,7 +17,7 @@ const change_method = require('./controllers/change_method.js');
 const bowl = require('./controllers/bowlControllers.js');
 const logs_request = require('./controllers/logs_request.js');
 const remove_object = require('./controllers/remove_object.js');
-const ccc = require('./controllers/get_currentConnectedClients.js');
+const sockets_status = require('./controllers/get_currentConnectedClients.js');
 const current_weight = require('./controllers/get_current_weight.js');
 
 const app = express();
@@ -27,31 +26,6 @@ app.use(cors());
 dotenv.config({path: './config.env'});
 const server = http.createServer(app);
 const io = require('./services/sockets.js').listen(server);
-// const io = socketio(server);
-
-// // socket io configurations
-// const currentConnectedClients = {};
-
-// io.on('connection', socket => {
-//   console.log("New client connected");
-//   // console.log("Socket = ", socket);
-  
-//   socket.on("disconnect", () => {
-//     console.log("Client disconnected");
-//     delete currentConnectedClients[socket.id];
-//   });
-
-//   socket.on('storeClientInfo', function (data) {
-//   		currentConnectedClients[socket.id] = 
-//   		{
-//   			customId : data.customId,
-//   			timeout : null,
-//   		}
-
-//   		console.log("-D- socket on : ",socket.id);
-//   		console.log(currentConnectedClients[socket.id]);
-// 	});
-// });
 
 const DB = process.env.DATABASE.replace( 
 	'<PASSWORD>', 
@@ -64,7 +38,8 @@ mongoose.connect(DB, {
 	useFindAndModify: false,
 }).then(() =>console.log("DB connected successfully!"));
 
-app.get('/currentConnectedClients', ccc.handleCurrentConnectedClients());
+app.get('/currentConnectedClients', sockets_status.handleCurrentConnectedClients());
+app.get('/weightRequestsMailbox', sockets_status.handleWeightRequestsMailbox());
 app.get('/cats', get_objects.handleGetAllCats());
 app.get('/bowls', get_objects.handleGetAllBowls());
 app.post('/device_data', device_data.handleDeviceData());
@@ -85,5 +60,3 @@ const port = process.env.PORT || 3000;
 server.listen(port, ()=> {
 	console.log(`app is running on ${port}`);
 })
-
-// module.exports = {io:io, currentConnectedClients:currentConnectedClients};

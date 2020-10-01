@@ -2,6 +2,8 @@ const Cat = require('./../models/catModel.js');
 const Bowl = require('./../models/bowlModel.js');
 const Device = require('./../models/deviceModel.js');
 const utils = require('./../services/utils.js');
+const {check_mailbox,send_current_weight_to_devices} = require('./../services/sockets.js');
+
 
 const handleUpdateData = () => async (req,res) => {
 	if (!("passport" in req.body)) {
@@ -30,11 +32,6 @@ const handleUpdateData = () => async (req,res) => {
 				feedingHours: 1,
 			}
 		);
-		// console.log("#############################");
-		// console.log("bowlData = ", bowlData);
-		// console.log("#############################");
-		// console.log("catsData = ", catsData);
-		// console.log("#############################");
 
 		if (!bowlData) {
 			throw("-E- null at bowlData request");
@@ -49,6 +46,7 @@ const handleUpdateData = () => async (req,res) => {
 			"catsWeights": catsData.map(cat => cat.weight),
 			"catsHours": catsData.map(cat => cat.feedingHours),
 			"method": bowlData["method"],
+			"scale": check_mailbox(bowlID),
 		});
 
 	} catch (err) {
@@ -60,7 +58,7 @@ const handleUpdateData = () => async (req,res) => {
 //check passport
 const check_passport = async (id,key) => {
 	const notFakeBowl = await Bowl.findOne({bowlID : id, key: key});
-	if (notFakeBowl.ok === 0) {
+	if (!notFakeBowl || notFakeBowl.ok === 0) {
 		throw("-E- UHHH you are a bad bowl")
 	}
 	console.log("-I- Good bowl!");
@@ -92,14 +90,15 @@ const handleNewLog = () => async (req,res) => {
 }
 
 const handlCurrentWeight = () => async (req,res) => {
+	const { passport,weight } = req.body;
 	try{
-		if (!("passport" in req.body)) {
+		if (!("passport")) {
 			throw("You must travel with passport");
 		}
 
 		await check_passport(passport["id"],passport["key"]);
 
-		if (!("weight" in req.body)) {
+		if (!("weight")) {
 			throw("No weight  - No service")
 		}
 	} catch (err) {
@@ -107,14 +106,16 @@ const handlCurrentWeight = () => async (req,res) => {
 		return res.status(400).json("-E- Bad request : "+err);
 	}
 
-	const { passport,Weight } = req.body;
-
 	try {
-		// utils.add_logs_to_device(passport["id"],log);
+		const funcRes = await send_current_weight_to_devices(passport["id"],weight);
+		// console.log("-D- funcRes = ",funcRes);
+		res.status(200).json(funcRes);
 	} catch (err) {
 		console.warn(err);
+		return res.status(200).json(err);
 	}
-	return res.status(200).json(true);
+
+	
 }
 
 module.exports = {

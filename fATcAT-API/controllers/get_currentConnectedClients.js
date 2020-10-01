@@ -1,4 +1,4 @@
-const {get_currentConnectedClients} = require('./../services/sockets.js');
+const {get_currentConnectedClients ,get_weightRequestsMailbox} = require('./../services/sockets.js');
 
 const handleCurrentConnectedClients = () => async (req,res) => {
 	console.log("-I- handleCurrentConnectedClients")
@@ -11,6 +11,18 @@ const handleCurrentConnectedClients = () => async (req,res) => {
 	}
 }
 
+const handleWeightRequestsMailbox = () => async (req,res) => {
+	console.log("-I- handleWeightRequestsMailbox")
+	try {
+		const WRM = get_weightRequestsMailbox();
+		res.json(WRM);
+	} catch (err) {
+		console.warn("-E- ",err);
+		res.status(400).json("-E- problem with get_weightRequestsMailbox method");
+	}
+}
+
 module.exports = {
 	handleCurrentConnectedClients : handleCurrentConnectedClients,
+	handleWeightRequestsMailbox: handleWeightRequestsMailbox,
 };

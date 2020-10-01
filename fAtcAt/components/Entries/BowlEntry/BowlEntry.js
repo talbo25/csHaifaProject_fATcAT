@@ -15,14 +15,18 @@ import {
 const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
   // console.log("BowlEntry ", bowl);
   const { bowlID, name } = bowl;
-  const [bowlMethod, setMethod] = useState({ method: bowl["method"] });
+  const [bowlMethod, setMethod] = useState(bowl["method"]);
 
   socket.once("bowl_to_auto", (data) => {
-    if (bowlMethod["method"] != "automatically") {
+    if (bowlMethod != "automatically") {
       Alert.alert(data.message);
-      setMethod({ method: "automatically" });
+      setMethod("automatically");
     }
   });
+
+  useEffect(() => {
+    console.log("-D- bowlMethod = ", bowlMethod);
+  }, [bowlMethod]);
 
   // change bowl state: open -> close / close -> open
   const change_bowl_state = (bowlID) => {
@@ -42,7 +46,7 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
         console.log("data = ", data);
         if (data["bowlID"]) {
           Alert.alert("DONE!");
-          setMethod({ method: data["method"] });
+          setMethod(data["method"]);
         }
         return data;
       })
@@ -59,7 +63,7 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
             }}
             style={[
               styles.imageSize,
-              bowlMethod.method === "manually" ? styles.manual_gray : null,
+              bowlMethod === "manually" ? styles.manual_gray : null,
             ]}
           />
           <Image

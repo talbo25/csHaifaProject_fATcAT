@@ -1,69 +1,65 @@
 import React, { useState, useEffect } from "react";
 import Logs from "../../components/Logs/Logs";
-import { StyleSheet, Text, View, ScrollView, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  SafeAreaView,
+  RefreshControl,
+} from "react-native";
 import { socket } from "./../../Services/Socket/Socket";
 const { SERVER_ADDRESS } = require("./../../Services/constants");
 
-// const get_logs = (deviceID) => {
-//   console.log("get_logs ", deviceID);
-//   const requestOptions = {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       deviceID: deviceID,
-//     }),
-//   };
-
-//   return fetch(`${SERVER_ADDRESS}/logs`, requestOptions)
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data["logs"]) {
-//         console.log("-I- fetch logs - ", data["size"]);
-//         console.log(data["logs"]);
-//         return data["logs"];
-//       }
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       return [];
-//     });
-// };
+const wait = (timeout) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, timeout);
+  });
+};
 
 const LogsPage = ({ uniqueId }) => {
   console.log("LogsBox");
   const [logs, setLogs] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    console.log("-I- onRefresh -- start");
+    setRefreshing(true);
+    fetchData();
+    setRefreshing(false);
+  }, []);
+
+  const fetchData = async () => {
+    console.log("get_logs ", uniqueId);
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        deviceID: uniqueId,
+      }),
+    };
+
+    await fetch(`${SERVER_ADDRESS}/logs`, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data["logs"]) {
+          console.log("-I- fetch logs - ", data["size"]);
+          console.log(data["logs"]);
+          setLogs(data["logs"]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      console.log("get_logs ", uniqueId);
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          deviceID: uniqueId,
-        }),
-      };
-
-      return fetch(`${SERVER_ADDRESS}/logs`, requestOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data["logs"]) {
-            console.log("-I- fetch logs - ", data["size"]);
-            console.log(data["logs"]);
-            setLogs(data["logs"]);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-    console.log("BAMBA");
     fetchData();
   }, []);
 
   socket.on("refresh_logs", (data) => {
     console.log("-I- update logs - ", data["size"]);
-    setLogs(data["logs"]);
+    logs.push(data["message"]);
   });
 
   console.log(logs);
@@ -74,7 +70,12 @@ const LogsPage = ({ uniqueId }) => {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.TableContainer}>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView
+          contentContainerStyle={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <Logs data={logs} />
         </ScrollView>
       </SafeAreaView>

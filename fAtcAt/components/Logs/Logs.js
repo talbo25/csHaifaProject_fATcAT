@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Log from "./Log";
 import { StyleSheet, Text, View } from "react-native";
 
 const Logs = ({ data }) => {
-  console.log("LOGS ", data);
+  // console.log("-D- LOGS ", data);
   const [logs, setLogs] = useState(data);
+
+  useEffect(() => {
+    setLogs(data);
+  }, [data]);
 
   return (
     <View style={styles.EntryContainer}>

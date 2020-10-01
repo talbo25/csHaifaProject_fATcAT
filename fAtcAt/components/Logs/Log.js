@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
 const Log = ({ log }) => {
-  console.log(" LOG= ", log);
+  // console.log("-D- LOG= ", log);
   const { date, info } = log;
   const [numOfLines, setNum] = useState(1);
 

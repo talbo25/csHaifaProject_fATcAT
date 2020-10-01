@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Form from "../../components/Form/Form";
+import { socket } from "./../../Services/Socket/Socket";
 import { StyleSheet, View, Alert } from "react-native";
 import {
   hoursOptions,
@@ -16,6 +17,7 @@ const CatForm = ({
   editTarget,
   get_current_weight,
 }) => {
+  const [scaleBowlName, setBowlName] = useState();
   const afterSubmitMessage = (result) => {
     if (result) {
       Alert.alert("New Cat! Yipi Ya");
@@ -23,6 +25,18 @@ const CatForm = ({
       Alert.alert("Oops... a problem");
     }
   };
+
+  socket.once("current_weight_response", (data) => {
+    console.log("current_weight_response data = ", data);
+    try {
+      Alert.alert(
+        `Response from ${scaleBowlName}`,
+        `Current weight is = ${data["message"]}`
+      );
+    } catch (err) {
+      console.warn("-W- current_weight_response ", err);
+    }
+  });
 
   const get_weight = () => {
     //function to make three option alert
@@ -37,13 +51,9 @@ const CatForm = ({
           text: bowl.name,
           onPress: async () => {
             try {
+              setBowlName(bowl.name);
               const w = await get_current_weight(bowl.bowlID);
-              // console.log("-D- get_current_weight response ", w);
-              if (!w) {
-                throw "get_current_weight return false";
-              } else {
-                Alert.alert(bowl.name, `Current weight is ${w}`);
-              }
+              console.log("-D- get_current_weight returned ", w);
             } catch (err) {
               console.warn(err);
               Alert.alert(

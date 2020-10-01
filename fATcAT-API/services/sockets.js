@@ -3,6 +3,7 @@ const Bowl = require('./../models/bowlModel.js');
 const socketio = require("socket.io");
 let io=socketio();
 const currentConnectedClients = {};
+const weightRequestsMailbox = {};
 
 module.exports.listen = (server) => {
   io = socketio(server);
@@ -33,6 +34,7 @@ module.exports.listen = (server) => {
 
 module.exports.send_message_to_device = (header,targetSocket,targetNick,message)  =>{
   console.log("-I- send_message_to_device -- start");
+  console.log("-I- targetSocket = ",targetSocket);
   console.log("-I- message = ",message);
 
   io.to(targetSocket).emit(header, 
@@ -66,7 +68,7 @@ module.exports.set_method_timer =  (socketID,bowlID) => {
     console.log("setTimeout for ", socketID);
     await  Bowl.findOneAndUpdate({bowlID:bowlID},{method: "automatically"});
     module.exports.send_message_to_device("bowl_to_auto",socketID,bowlID,`Bowl is back to automatically method`)
-    },30*1000);
+    },5*1000);
   }
 
   module.exports.clear_timeout = (socketID) => {
@@ -89,6 +91,11 @@ module.exports.get_currentConnectedClients = () => {
   return currentConnectedClients;
 }
 
+module.exports.get_weightRequestsMailbox = () => {
+  console.log("-I- get_weightRequestsMailbox");
+  return weightRequestsMailbox;
+}
+
 module.exports.get_current_bowl_weight = (socketID) => {
   if (!(socketID in currentConnectedClients) || !(currentWeight in currentConnectedClients[socketID]) || currentConnectedClients[socketID].currentWeight === null) {
     return false;
@@ -96,4 +103,53 @@ module.exports.get_current_bowl_weight = (socketID) => {
   const w = currentConnectedClients[socketID].currentWeight;
   currentConnectedClients[socketID].currentWeight = null;
   return w;
+}
+
+//device request immidiate scale
+module.exports.add_weight_request_to_pipe = (deviceID, bowlID) => {
+  if (!(bowlID in weightRequestsMailbox)) {
+    weightRequestsMailbox[bowlID] = [];
+  }
+
+  const deviceSocketID = module.exports.get_socketid_by_customid(deviceID);
+
+  // if already in dictionary don't add 
+  if (weightRequestsMailbox[bowlID].includes(deviceSocketID)) {
+    return false
+  }
+
+  const newLen = weightRequestsMailbox[bowlID].unshift(deviceSocketID);
+
+  return true;
+}
+
+// check if there are pending requests for immidiate scale
+module.exports.check_mailbox = (bowlID) => {
+  if (!(bowlID in weightRequestsMailbox)) {
+    return false
+  }
+  if (!weightRequestsMailbox[bowlID] || weightRequestsMailbox[bowlID].length ===0) {
+    return false;
+  }
+
+  // at least one device is waiting for scale
+  return true
+}
+
+// bowl respond to immidiate scale requesr
+module.exports.send_current_weight_to_devices = (bowlID,weight) => {
+  console.log("-I- send_current_weight_to_devices");
+  if (!weightRequestsMailbox[bowlID]) {
+    throw("-E- Couldn't reach bowl's mailbox");
+  }
+  const p = new Promise ((resolve,reject) => {
+    weightRequestsMailbox[bowlID].forEach(socketID => {
+    module.exports.send_message_to_device("current_weight_response",socketID,"man devai",weight) ;
+  })
+    resolve()
+  })
+  return p.then(() => {
+    delete weightRequestsMailbox[bowlID];
+    return "Sent response";
+  });
 }
