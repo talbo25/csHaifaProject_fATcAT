@@ -23,6 +23,7 @@ const handleUpdateData = () => async (req,res) => {
 				method: 1,
 			}
 		);
+
 		const catsData = await Cat.find(
 			{
 				bowlID: passport["id"],
@@ -32,6 +33,8 @@ const handleUpdateData = () => async (req,res) => {
 				feedingHours: 1,
 			}
 		);
+
+		console.log("-I- catsData = ", catsData);
 
 		if (!bowlData) {
 			throw("-E- null at bowlData request");
@@ -46,7 +49,7 @@ const handleUpdateData = () => async (req,res) => {
 			"catsWeights": catsData.map(cat => cat.weight),
 			"catsHours": catsData.map(cat => cat.feedingHours),
 			"method": bowlData["method"],
-			"scale": check_mailbox(bowlID),
+			"scale": check_mailbox(passport["id"]),
 		});
 
 	} catch (err) {
