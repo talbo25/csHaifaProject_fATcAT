@@ -13,7 +13,7 @@ const Logs = ({ data }) => {
   return (
     <View style={styles.EntryContainer}>
       {logs.map((log, i) => {
-        return <Log log={log} />;
+        return <Log log={log} key={i} />;
       })}
     </View>
   );

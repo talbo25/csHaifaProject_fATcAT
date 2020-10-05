@@ -29,6 +29,7 @@ const handleUpdateData = () => async (req,res) => {
 				bowlID: passport["id"],
 			},
 			{
+				name:1,
 				weight: 1,
 				feedingHours: 1,
 			}
@@ -48,6 +49,7 @@ const handleUpdateData = () => async (req,res) => {
 			"bowlHours" : bowlData["activeHours"],
 			"catsWeights": catsData.map(cat => cat.weight),
 			"catsHours": catsData.map(cat => cat.feedingHours),
+			"catsNames":catsData.map(cat => cat.name),
 			"method": bowlData["method"],
 			"scale": check_mailbox(passport["id"]),
 		});
@@ -89,7 +91,7 @@ const handleNewLog = () => async (req,res) => {
 		console.warn(err);
 		return res.status(400).json(err);
 	}
-	return res.status(200).json(`-I- blabla`);
+	return res.status(200).json(`New log recieved by server`);
 }
 
 const handlCurrentWeight = () => async (req,res) => {
