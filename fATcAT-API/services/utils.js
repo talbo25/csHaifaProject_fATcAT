@@ -91,12 +91,12 @@ exports.add_logs_to_device = async (bowlID, newLogInfo) => {
 		const bowlNickname = await get_bowl_nickname(device.bowls,bowlID);
 		console.log("-I- bowlNickname = ",bowlNickname);
 		const newLog = {
-			date : newLogInfo["time"],
+			date : newLogInfo["date"] + " " + newLogInfo["time"],
 			info : bowlNickname + " - " + newLogInfo["msg"],
 		}
 		console.log("-I- newLog = ",newLog);
 		// if 20 logs - remoe oldest
-		if (device.logs.length >=20){
+		if (device.logs.length >=50){
 			await Device.findByIdAndUpdate( device["_id"], { $pop: {logs: -1 } } )
 		}
 		const updateDevicesStatus = await Device.findByIdAndUpdate(device["_id"],{ $addToSet: { logs: newLog}},{new:true});
