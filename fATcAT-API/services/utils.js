@@ -136,16 +136,6 @@ exports.change_method = async (bowlID, deviceID) => {
 		} 
 		console.log("-D- changed to man method = automatically")
 		set_method_timer(socketID,bowlID);
-		// currentConnectedClients[socketID].timeout = setTimeout( () => {
-		// console.log("setTimeout for ", socketID);
-		// bowl["method"] = "automatically";
-		// send_message_to_device("bowl_to_auto",socketID,bowlID,`Bowl is back to automatically method`)
-		// // io.to(socketID).emit("bowl_to_auto", 
-		// // 	{
-		// // 		bowlID: bowlID,
-		// // 		message: `Bowl is back to automatically method`
-		// // 	});
-		// },5000);
 		return bowl;
 	} catch (err) {
 		console.log(err);
@@ -157,33 +147,25 @@ const delay = async (ms) =>{
   return await new Promise(resolve => setTimeout(resolve,ms));
 }
 
-exports.get_weight = async (bowlID, deviceID) => {
-	console.log("-I- get_weight -- start");
-	console.log("bowlID = ",bowlID);
-	console.log("deviceID = ",deviceID);
-	let socketID =1;
+// exports.get_weight = async (bowlID, deviceID) => {
+// 	console.log("-I- get_weight -- start");
+// 	console.log("bowlID = ",bowlID);
+// 	console.log("deviceID = ",deviceID);
+// 	let socketID =1;
 
-	// get bowl current weight
+// 	// get bowl current weight
+// 	// send request to bowl
+// 	// get value from bowl
+// 	let myWeight = false;
+// 	let chances = 3;
 
-	// // get bowl socket
-	// socketID = get_socketid_by_customid(bowlID);
-	// console.log("-D- socketID = ", socketID);
-	// if (!socketID) {
-	// 	throw("problem with finding socketID for bowl");
-	// }
-
-	// send request to bowl
-	// get value from bowl
-	let myWeight = false;
-	let chances = 3;
-
-	while (chances > 0 && !myWeight) {
-		console.log("-D- chances = ", chances);
-		console.log("-D- myWeight = ", myWeight);
-		myWeight = get_current_bowl_weight(socketID);
-		// myWeight = 3.3;
-		await delay(3*1000);
-		--chances;
-	}
-	return myWeight;
-}
+// 	while (chances > 0 && !myWeight) {
+// 		console.log("-D- chances = ", chances);
+// 		console.log("-D- myWeight = ", myWeight);
+// 		myWeight = get_current_bowl_weight(socketID);
+// 		// myWeight = 3.3;
+// 		await delay(3*1000);
+// 		--chances;
+// 	}
+// 	return myWeight;
+// }

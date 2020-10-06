@@ -25,7 +25,7 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
   });
 
   useEffect(() => {
-    // console.log("-D- bowlMethod = ", bowlMethod);
+    console.log("-D- bowlMethod = ", bowlMethod);
   }, [bowlMethod]);
 
   // change bowl state: open -> close / close -> open
@@ -56,29 +56,37 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
   return (
     <View style={styles.container}>
       <TouchableHighlight onPress={() => change_bowl_state(bowlID)}>
-        <React.Fragment>
-          <Image
-            source={{
-              uri: `https://robohash.org/${name}?size=100x100&set=set3`,
-            }}
-            style={[
-              styles.imageSize,
-              bowlMethod === "manually" ? styles.manual_gray : null,
-            ]}
-          />
+        {bowlMethod === "manually" ? (
+          <React.Fragment>
+            <Image
+              source={{
+                uri: `https://robohash.org/${name}?size=100x100&set=set3`,
+              }}
+              style={[styles.manual_gray, styles.imageSize]}
+            />
+            <Image
+              source={{
+                uri: `https://robohash.org/${name}?size=100x100&set=set3`,
+              }}
+              style={{
+                width: 30,
+                height: 30,
+                position: "absolute",
+                opacity: 0.3,
+              }}
+            />
+          </React.Fragment>
+        ) : (
           <Image
             source={{
               uri: `https://robohash.org/${name}?size=100x100&set=set3`,
             }}
             style={{
-              // flex: 3,
               width: 30,
               height: 30,
-              position: "absolute",
-              opacity: 0.3,
             }}
           />
-        </React.Fragment>
+        )}
       </TouchableHighlight>
       <Text style={{ flex: 6, textAlign: "center" }}>{name}</Text>
       <Button
@@ -129,6 +137,7 @@ const styles = StyleSheet.create({
   manual_gray: {
     tintColor: "gray",
   },
+  manual_none: {},
   normalImage: {
     position: "absolute",
     opacity: 1,

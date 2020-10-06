@@ -96,14 +96,14 @@ module.exports.get_weightRequestsMailbox = () => {
   return weightRequestsMailbox;
 }
 
-module.exports.get_current_bowl_weight = (socketID) => {
-  if (!(socketID in currentConnectedClients) || !(currentWeight in currentConnectedClients[socketID]) || currentConnectedClients[socketID].currentWeight === null) {
-    return false;
-  }
-  const w = currentConnectedClients[socketID].currentWeight;
-  currentConnectedClients[socketID].currentWeight = null;
-  return w;
-}
+// module.exports.get_current_bowl_weight = (socketID) => {
+//   if (!(socketID in currentConnectedClients) || !(currentWeight in currentConnectedClients[socketID]) || currentConnectedClients[socketID].currentWeight === null) {
+//     return false;
+//   }
+//   const w = currentConnectedClients[socketID].currentWeight;
+//   currentConnectedClients[socketID].currentWeight = null;
+//   return w;
+// }
 
 //device request immidiate scale
 module.exports.add_weight_request_to_pipe = (deviceID, bowlID) => {
