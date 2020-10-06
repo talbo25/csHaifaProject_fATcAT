@@ -9,8 +9,8 @@ const { SERVER_ADDRESS } = require("./../../Services/constants");
 
 // verify if user's bowl exist on server
 const find_bowl_button = (objectType, objectData) => {
-  console.log("-D- find_bowl_button");
-  console.log("-D- objectData = ", objectData);
+  // console.log("-D- find_bowl_button");
+  // console.log("-D- objectData = ", objectData);
   let { id, key } = objectData;
 
   const requestOptions = {

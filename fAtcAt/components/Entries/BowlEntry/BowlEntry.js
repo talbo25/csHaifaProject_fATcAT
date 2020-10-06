@@ -25,7 +25,7 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
   });
 
   useEffect(() => {
-    console.log("-D- bowlMethod = ", bowlMethod);
+    // console.log("-D- bowlMethod = ", bowlMethod);
   }, [bowlMethod]);
 
   // change bowl state: open -> close / close -> open

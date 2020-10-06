@@ -53,7 +53,7 @@ const CatForm = ({
             try {
               setBowlName(bowl.name);
               const w = await get_current_weight(bowl.bowlID);
-              console.log("-D- get_current_weight returned ", w);
+              // console.log("-D- get_current_weight returned ", w);
             } catch (err) {
               console.warn(err);
               Alert.alert(

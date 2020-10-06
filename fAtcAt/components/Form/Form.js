@@ -31,7 +31,7 @@ const getInitialStateAndValues = (fields, editTarget) => {
       state[key] = editTarget[key];
     } else if ("options" in fields[key]) {
       if (fields[key]["type"] === "multipleSelect") {
-        console.log("-D- what is this key - ", key);
+        // console.log("-D- what is this key - ", key);
         state[key] = [];
       } else if (fields[key]["type"] === "picker") {
         state[key] = fields[key]["options"][0]["value"];
@@ -55,7 +55,7 @@ const Form = ({
   afterSubmit,
   editTarget,
 }) => {
-  console.log("-D- Form ");
+  console.log("-I- Form ");
 
   const fieldKeys = Object.keys(fields);
 
@@ -75,7 +75,7 @@ const Form = ({
   };
 
   const submit = async () => {
-    console.log("-D- submit");
+    // console.log("-D- submit");
     setErrorMessage("");
     setValidationErrors(getInitialState(fieldKeys));
 

@@ -69,9 +69,9 @@ const App = () => {
 
   on_button_submit = (objectType, objectData) => {
     // edit or create new
-    console.log("-D- on_button_submit");
-    console.log("-D- objectType ", objectType);
-    console.log("-D- objectData ", objectData);
+    console.log("-I- on_button_submit");
+    // console.log("-D- objectType ", objectType);
+    // console.log("-D- objectData ", objectData);
 
     const uniqueId = DeviceInfo.getUniqueId();
     const requestOptions = {
@@ -97,9 +97,9 @@ const App = () => {
   };
 
   remove_object = (objectType, objectID) => {
-    console.log("-D- remove_object");
-    console.log("-D- objectType ", objectType);
-    console.log("-D- objectID ", objectID);
+    console.log("-I- remove_object");
+    // console.log("-D- objectType ", objectType);
+    // console.log("-D- objectID ", objectID);
 
     const uniqueId = DeviceInfo.getUniqueId();
     const requestOptions = {
@@ -125,8 +125,8 @@ const App = () => {
   };
 
   get_current_weight = (bowlID) => {
-    console.log("-D- get_current_weight");
-    console.log("-D- bowlID ", bowlID);
+    console.log("-I- get_current_weight");
+    // console.log("-D- bowlID ", bowlID);
 
     const uniqueId = DeviceInfo.getUniqueId();
     const requestOptions = {

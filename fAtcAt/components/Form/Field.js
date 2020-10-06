@@ -14,9 +14,9 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import MultiSelect from "react-native-multiple-select";
 
 const Field = ({ keyna, field, value, onChangeValue }) => {
-  console.log("keyna = ", keyna);
-  console.log("field = ", field);
-  console.log("value = ", value);
+  // console.log("keyna = ", keyna);
+  // console.log("field = ", field);
+  // console.log("value = ", value);
 
   if (field["type"] === "button") {
     return (
@@ -50,13 +50,13 @@ const Field = ({ keyna, field, value, onChangeValue }) => {
   if (field["type"] === "picker") {
     let radioButtons = [];
     let first = "";
-    field["options"].map((option) => {
+    field["options"].map((option, i) => {
       // console.log("-D- option = ", option);
       if (first === "") {
         first = option;
       }
       radioButtons.push(
-        <Picker.Item label={option.label} value={option.value} />
+        <Picker.Item label={option.label} value={option.value} key={i} />
       );
     });
     return (
@@ -97,11 +97,11 @@ const Field = ({ keyna, field, value, onChangeValue }) => {
     let radioButtons = [];
     let first = "";
 
-    field["options"].map((option) => {
+    field["options"].map((option, i) => {
       if (first === "") {
         first = option;
       }
-      radioButtons.push(<Picker.Item label={option} value={option} />);
+      radioButtons.push(<Picker.Item label={option} value={option} key={i} />);
     });
     let m = value.match(/^s?(\d\d:\d\d)?e?(\d\d:\d\d)?$/);
     let sTime = "";
@@ -158,7 +158,7 @@ const Field = ({ keyna, field, value, onChangeValue }) => {
             selectedItems={selectedItems}
             selectText="Pick Items"
             searchInputPlaceholderText="Search Items..."
-            onChangeInput={(text) => console.log(text)}
+            // onChangeInput={(text) => console.log(text)}
             tagRemoveIconColor="red"
             tagBorderColor="pink"
             tagTextColor="blue"

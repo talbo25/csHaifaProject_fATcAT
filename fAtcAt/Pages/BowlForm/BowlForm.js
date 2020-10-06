@@ -11,7 +11,7 @@ import {
 } from "../../components/Form/validation";
 
 const BowlForm = ({ cats, on_button_submit, editTarget }) => {
-  console.log("-D- NewBowl editTarget = ", editTarget);
+  // console.log("-D- NewBowl editTarget = ", editTarget);
   const afterSubmitMessage = (result) => {
     // NEED TO CHANGE!!!!!!!!!!!!!
     if (result) {
