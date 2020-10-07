@@ -13,20 +13,29 @@ import {
 } from "react-native";
 
 const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
-  // console.log("BowlEntry ", bowl);
   const { bowlID, name } = bowl;
-  const [bowlMethod, setMethod] = useState(bowl["method"]);
+  const [bowlMethod, setMethod] = useState({
+    myID: bowlID,
+    method: bowl["method"],
+  });
 
   socket.once("bowl_to_auto", (data) => {
-    if (bowlMethod != "automatically") {
-      Alert.alert(data.message);
-      setMethod("automatically");
+    // console.log("-I- bowl_to_auto- data = ", data);
+    // console.log("-I- bowlID = ", bowlID);
+    if (
+      bowlMethod.myID === data.target &&
+      bowlMethod.method != "automatically"
+    ) {
+      setMethod({ ...bowlMethod, method: "automatically" });
     }
   });
 
-  useEffect(() => {
-    console.log("-D- bowlMethod = ", bowlMethod);
-  }, [bowlMethod]);
+  socket.once("change_method", (data) => {
+    // console.log("-I- socket call : change_method = ", data);
+    if (bowlMethod.myID === data.target && bowlMethod.method != data.message) {
+      setMethod({ ...bowlMethod, method: data.message });
+    }
+  });
 
   // change bowl state: open -> close / close -> open
   const change_bowl_state = (bowlID) => {
@@ -45,8 +54,12 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
       .then((data) => {
         console.log("data = ", data);
         if (data["bowlID"]) {
-          Alert.alert("DONE!");
-          setMethod(data["method"]);
+          let msg;
+          if (data["method"] === "manually")
+            msg = "Bowl will stay open for 20 minutes";
+          else msg = "Bowl will work according active hours and cats' data";
+          Alert.alert(`Bowl ${name} was changed to ${data["method"]}`, msg);
+          setMethod({ ...bowlMethod, method: data["method"] });
         }
         return data;
       })
@@ -56,7 +69,7 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
   return (
     <View style={styles.container}>
       <TouchableHighlight onPress={() => change_bowl_state(bowlID)}>
-        {bowlMethod === "manually" ? (
+        {bowlMethod.method === "manually" ? (
           <React.Fragment>
             <Image
               source={{

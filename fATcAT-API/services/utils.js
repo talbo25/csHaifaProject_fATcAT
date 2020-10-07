@@ -3,7 +3,7 @@ const Bowl = require('./../models/bowlModel.js');
 const Device = require('./../models/deviceModel.js');
 // const io = require('./../index.js').io;
 // const currentConnectedClients = require('./../index.js').currentConnectedClients;
-const {send_message_to_device, get_socketid_by_customid,set_method_timer,clear_timeout,refresh_logs,get_current_bowl_weight} = require('./sockets.js');
+const {send_message_to_device, get_socketid_by_customid,set_method_timer,clear_timeout,refresh_logs,get_current_bowl_weight,change_devices_method} = require('./sockets.js');
 
 exports.getAllDeviceData = async (id) => {
 	let res = {};
@@ -108,21 +108,20 @@ exports.change_method = async (bowlID, deviceID) => {
 	console.log("-I- change_method -- start");
 	console.log("bowlID = ",bowlID);
 	console.log("deviceID = ",deviceID);
-	let socketID;
+	// let socketID;
 
-	try{
-		socketID = get_socketid_by_customid(deviceID);
-		if (!socketID) {
-			return false;
-		}
-	} catch (err) {
-		console.warn(err);
-		throw("-E- problem with socket");
-	}
-	console.log("-I- got socket id");
+	// try{
+	// 	socketID = get_socketid_by_customid(deviceID);
+	// 	if (!socketID) {
+	// 		return false;
+	// 	}
+	// } catch (err) {
+	// 	console.warn(err);
+	// 	throw("-E- problem with socket");
+	// }	
+	// change bowl's method
 	try{
 		let bowl =await  Bowl.findOneAndUpdate({bowlID:bowlID, method: "automatically"},{method: "manually"},{new:true});
-		console.log("-D- 11111 bowl = ",bowl);
 
 		if (!bowl){
 			console.log("-D- bowl null method = manually")
@@ -131,21 +130,22 @@ exports.change_method = async (bowlID, deviceID) => {
 			if (!bowl) {
 				 throw("-ERROR- Couldn't find bowl");
 			}
-			clear_timeout(socketID);
+			change_devices_method(bowlID,"automatically");
+			// clear_timeout(socketID);
 			return bowl;
 		} 
-		console.log("-D- changed to man method = automatically")
-		set_method_timer(socketID,bowlID);
+		change_devices_method(bowlID,"manually");
+		// set_method_timer(socketID,bowlID);
 		return bowl;
 	} catch (err) {
-		console.log(err);
+		console.warn(err);
 		return false;
 	}
 	
 }
-const delay = async (ms) =>{
-  return await new Promise(resolve => setTimeout(resolve,ms));
-}
+// const delay = async (ms) =>{
+//   return await new Promise(resolve => setTimeout(resolve,ms));
+// }
 
 // exports.get_weight = async (bowlID, deviceID) => {
 // 	console.log("-I- get_weight -- start");

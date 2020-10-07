@@ -1,4 +1,5 @@
 const Bowl = require('./../models/bowlModel.js');
+const Device = require('./../models/deviceModel.js');
 
 const socketio = require("socket.io");
 let io=socketio();
@@ -33,7 +34,7 @@ module.exports.listen = (server) => {
 
 
 module.exports.send_message_to_device = (header,targetSocket,targetNick,message)  =>{
-  console.log("-I- send_message_to_device -- start");
+  console.log("-I- send_message_to_device -- start -- ",header);
   console.log("-I- targetSocket = ",targetSocket);
   console.log("-I- message = ",message);
 
@@ -53,22 +54,51 @@ module.exports.get_socketid_by_customid = (deviceID) =>{
   }
   console.log("currentConnectedClients:",currentConnectedClients);
   Object.keys(currentConnectedClients).forEach(clientID => {
-    console.log("-D- currentConnectedClients[clientID].customId = ",currentConnectedClients[clientID].customId);
+    // console.log("-D- currentConnectedClients[clientID].customId = ",currentConnectedClients[clientID].customId);
     if(currentConnectedClients[clientID].customId === deviceID){
       found = clientID;
       return ;
     }
   });
-  console.log("-I- get_so cketid_by_customid -- end ", found );
+  console.log("-I- get_socketid_by_customid -- end ", found );
   return found;
+}
+
+module.exports.change_devices_method = async (bowlID,changeToMethod) => {
+  console.log("-I- change_devices_method -- start");
+
+  console.log("-I- get relevant devices");
+  const myDevices = await Device.find({"bowls.bowlID":bowlID},{deviceID:1});
+  const kululu = myDevices.map( device => {return device.deviceID});
+  console.log("-D- myDevices: ",myDevices);
+  console.log("-D- kululu: ",kululu);
+  Object.keys(currentConnectedClients).forEach(clientID => {
+    if(kululu.includes(currentConnectedClients[clientID].customId) ){
+      console.log("-D- currentConnectedClients[clientID].customId = ",currentConnectedClients[clientID].customId);
+      module.exports.send_message_to_device("change_method",clientID,bowlID,changeToMethod);
+      //if manually -> need to set a timer
+      // else automatically -> clear timers
+      try {
+        if (changeToMethod === "manually"){
+          console.log("-D- manually");
+          module.exports.set_method_timer(clientID,bowlID)
+        } else if (changeToMethod === "automatically"){
+          console.log("-D- automatically")
+          module.exports.clear_timeout(clientID);
+        }
+      } catch (err) {
+        console.warn("-E- timer prblem (maybe the device disconnected. ",err);
+      }
+    }
+  })
 }
 
 module.exports.set_method_timer =  (socketID,bowlID) => {
     currentConnectedClients[socketID].timeout = setTimeout( async () => {
-    console.log("setTimeout for ", socketID);
+    console.log("-I- setTimeout for ", socketID);
     await  Bowl.findOneAndUpdate({bowlID:bowlID},{method: "automatically"});
     module.exports.send_message_to_device("bowl_to_auto",socketID,bowlID,`Bowl is back to automatically method`)
-    },10*60*1000);
+    },20*1000);
   }
 
   module.exports.clear_timeout = (socketID) => {
@@ -76,15 +106,14 @@ module.exports.set_method_timer =  (socketID,bowlID) => {
   }
 
 
-module.exports.refresh_logs = (devices) => {
-  console.log("-I- refresh_logs -- start");
-  let socketID;
-  devices.forEach( device => {
-    socketID = module.exports.get_socketid_by_customid(device.deviceID);
-    module.exports.send_message_to_device("refresh_logs",socketID,device.deviceID,device.logs[-1]) ;
-  })
-
-}
+// module.exports.refresh_logs = (devices) => {
+//   console.log("-I- refresh_logs -- start");
+//   let socketID;
+//   devices.forEach( device => {
+//     socketID = module.exports.get_socketid_by_customid(device.deviceID);
+//     module.exports.send_message_to_device("refresh_logs",socketID,device.deviceID,device.logs[-1]) ;
+//   })
+// }
 
 module.exports.get_currentConnectedClients = () => {
   console.log("-I- get_currentConnectedClients");
