@@ -56,7 +56,7 @@ const BowlEntry = ({ bowl, change_edit_target, remove_object, deviceID }) => {
         if (data["bowlID"]) {
           let msg;
           if (data["method"] === "manually")
-            msg = "Bowl will stay open for 20 minutes";
+            msg = "Bowl will stay open for 10 minutes";
           else msg = "Bowl will work according active hours and cats' data";
           Alert.alert(`Bowl ${name} was changed to ${data["method"]}`, msg);
           setMethod({ ...bowlMethod, method: data["method"] });
