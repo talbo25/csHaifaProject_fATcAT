@@ -11,6 +11,8 @@ const handleCheckWeight = () => async (req,res) => {
 
 	const check_time =  (checkHours) => {
 		let inTime =false;
+		// It's way way better to build your data structure to not need this tricky regexp
+		// like a numbers array of feeding hours, it;s easy to maintain and easy to validate 
 		const m = cat["feedingHours"].match(/^s?(\d\d):\d\d?e?(\d\d):\d\d?$/);
 		if (m) {
 			if (m[1] < m[3]) {
@@ -25,6 +27,7 @@ const handleCheckWeight = () => async (req,res) => {
 	}
 
 	const check_weight = (weight) => {
+		// don't put "magic" numbers in your code
 		let minW =cat["weight"]-0.2;
 		let maxW = parseFloat(cat["weight"])+0.2;
 		if (weight >= minW && weight <= maxW) {

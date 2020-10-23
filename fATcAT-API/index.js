@@ -1,4 +1,6 @@
-
+// the cody style here is very old, I recommend you to migrate to the TypeScript world,
+// but even if you want to remain in pure js, you can update the code style with better import/export
+// you can read about the 'import { myFun } from 'my-lib' and 'export function myFun()'    
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const express = require('express')
@@ -23,10 +25,27 @@ const current_weight = require('./controllers/get_current_weight.js');
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+// First of all I recommend you read carefully this article https://medium.com/@nodepractices/were-under-attack-23-node-js-security-best-practices-e33c146cb87d
+// currently I have access to your DB as admin and I can manipulate you data and login as any bowl I want, so read this article carefully and replace your DB certificates
+// and to the details:
+// it's better to use the default name '.env', also *never* add the .env file in your repository!!!
+// it's will causes you to expose secrets by mistake.
+// the vast conversion is to add the .env file to the gitignore, and create a 'example.env' with the keys example.
+// also make sure that the file is exists before loading it, since in production you probably will not able to edit the file but to pass the variables values
+// using the app host administration management
 dotenv.config({path: './config.env'});
+
 const server = http.createServer(app);
+
+// Put all the imports in the top of the file
+// and there is not point to hold unused var.
 const io = require('./services/sockets.js').listen(server);
 
+// If you will use my suggestion above in the .env you will not need this hack, and also you will not need to tell everybody
+// what is your database user-name and URL
+// remember, never tell info for free to the bad-guys about your systems.
+// also, the name is not DB but DB_URL  
 const DB = process.env.DATABASE.replace( 
 	'<PASSWORD>', 
 	process.env.DATABASE_PASSWORD
@@ -38,6 +57,8 @@ mongoose.connect(DB, {
 	useFindAndModify: false,
 }).then(() =>console.log("DB connected successfully!"));
 
+// To avid malicious payload you need to validate to use payload, using framrowd that do it build-in for your (like TSOA) 
+// or by schema validator (like joi) 
 app.get('/currentConnectedClients', sockets_status.handleCurrentConnectedClients());
 app.get('/weightRequestsMailbox', sockets_status.handleWeightRequestsMailbox());
 app.get('/cats', get_objects.handleGetAllCats());
@@ -56,6 +77,7 @@ app.post('/remove_object/bowl', remove_object.handleRemoveBowl());
 app.post('/remove_object/cat', remove_object.handleRemoveCat());
 app.post('/current_weight', current_weight.handleGetCurrentBowlWeight());
 
+// Add an errors catcher, to not exposes inner error and stack-traces to the client/bad-guy 
 const port = process.env.PORT || 3000;
 server.listen(port, ()=> {
 	console.log(`app is running on ${port}`);

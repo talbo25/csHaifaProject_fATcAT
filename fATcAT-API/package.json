@@ -4,7 +4,8 @@
   "description": "fatcat app api",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "__comment__" : "Add a simplest start command for production, also it's better to add a linter and build process to make sure the the code is OK before deploy"
   },
   "author": "",
   "license": "ISC",

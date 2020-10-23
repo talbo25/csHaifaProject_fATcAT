@@ -3,6 +3,7 @@ const {get_currentConnectedClients ,get_weightRequestsMailbox} = require('./../s
 const handleCurrentConnectedClients = () => async (req,res) => {
 	console.log("-I- handleCurrentConnectedClients")
 	try {
+		// Give normal and readable variables names, it's very important
 		const CCC = get_currentConnectedClients();
 		res.json(CCC);
 	} catch (err) {

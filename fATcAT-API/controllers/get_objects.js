@@ -1,3 +1,4 @@
+// Give less generic file name
 const Cat = require('./../models/catModel.js');
 const Bowl = require('./../models/bowlModel.js');
 

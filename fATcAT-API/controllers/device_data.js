@@ -22,6 +22,7 @@ const handleDeviceData = () => async (req,res) => {
 	}
 }
 
+// This is an ugly export way :)
 module.exports = {
 	handleDeviceData : handleDeviceData,
 };
