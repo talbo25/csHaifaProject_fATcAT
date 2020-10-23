@@ -1,0 +1,3 @@
+
+# gitignor file shuld be without txt extention
+node_modules/
